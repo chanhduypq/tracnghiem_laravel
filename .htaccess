@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteRule ^\.htaccess$ - [F]
+RewriteCond %{REQUEST_URI} =""
+RewriteRule ^.*$ /htdocs/index.php [NC,L]
+RewriteCond %{REQUEST_URI} !^/htdocs/.*$
+RewriteRule ^(.*)$ /htdocs/$1
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^htdocs/.*$ /htdocs/index.php [NC,L]

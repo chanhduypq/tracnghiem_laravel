@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'start_rating_for_customer' => 'Start rating for :name',
+    'total_rating_for' => 'Total :t vote start',
+    'total_vote_and_like_from_system' => ':v Vote and :l like from user of JP Community',
+    'number_reviewed' => ' :n Vote',
+    'number_like' => ' :n Liked',
+    'number_comment' => ' :n Comment',
+    'view_more_comment' => 'View more :n comment',
+    'view_more_customer_reviewed' => 'View more :n reviewed',
+    'view_more_in_total' => ':n in :t',
+    'number_like_comment' => ':l liked, :c comment',
+    'number_message_unread' => 'You have :n message new',
+    'see_all_message' => 'See All Message',
+    'show_more_message' => 'Show more :n message',
+    'arr_ago_time' => [
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    ],
+    'ago' => ' ago',
+    'just_now' => 'just now',
+    'success_update_news' => 'Updated for <a href= ":url">:news_id</a>',
+    'required_city_name' => 'Please input City name',
+    'are_you_want_to_delete' => 'Are you want to delete?',
+    'no_result' => 'No result!',
+    'first_time_login' => 'This first time, please registry to us system!',
+];

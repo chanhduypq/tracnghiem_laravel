@@ -1,0 +1,13 @@
+/node_modules
+/htdocs/storage
+/htdocs/.htaccess
+/htdocs/web.config
+/storage/*.key
+/vendor
+/.idea
+composer.phar
+Homestead.json
+Homestead.yaml
+.env
+/htdocs/uploads
+/nbproject/private/

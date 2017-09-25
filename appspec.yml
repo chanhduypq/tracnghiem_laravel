@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /project/dev.digitalship.asia/www
+permissions:
+  - object: /project/dev.digitalship.asia/www
+    owner: digitalship
+    group: ds
+    mode: 775
+    type:
+      - directory
+  - object: /project/dev.digitalship.asia/www
+    owner: digitalship
+    group: ds
+    mode: 664
+    type:
+      - file
