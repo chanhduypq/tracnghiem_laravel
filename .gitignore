@@ -11,3 +11,5 @@ Homestead.yaml
 .env
 /htdocs/uploads
 /nbproject/private/
+nbproject/project.xml
+nbproject/project.properties
