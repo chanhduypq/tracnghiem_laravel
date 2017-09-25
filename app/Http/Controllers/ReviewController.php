@@ -1,24 +1,23 @@
-<?php
+<?php 
+namespace JP_COMMUNITY\Http\Controllers;
 
-class ReviewController extends Core_Controller_Action {
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
+use JP_COMMUNITY\Models\Question;
 
-    public function init() {
-        parent::init();
-        $this->view->headTitle('Thi thử - Ôn tập', true);
-    }
+class ReviewController extends BaseController {
 
-    private function saveDB($data) {
-        $db = Core_Db_Table::getDefaultAdapter();
-        $db->beginTransaction();
+
+    private function saveDB(Request $request) {
+        DB::beginTransaction();
         try {
             /**
              *  xóa thông tin lần ôn tập trước
              */
-            $db->query('DELETE FROM user_review_detail WHERE user_review_id IN (SELECT id FROM user_review WHERE user_id='.$this->getUserId().')')->execute();
-            $db->delete('user_review', 'user_id='.$this->getUserId());
-            
-            $auth = Zend_Auth::getInstance();
-            $identity = $auth->getIdentity();
+            DB::statement('DELETE FROM user_review_detail WHERE user_review_id IN (SELECT id FROM user_review WHERE user_id='.$this->getUserId().')');
+            DB::table('user_review')->where('user_id', $this->getUserId())->delete();
+            $identity=Session::get('user');
             $sh = $identity['sh_review'];
             $sm = $identity['sm_review'];
 
@@ -27,13 +26,12 @@ class ReviewController extends Core_Controller_Action {
 
             /**
              * insert table user_review
-             */
-            $modelUserExam = new Default_Model_Userreview();
-            $userExamId = $modelUserExam->insert(
+             */            
+            $userExamId=DB::table('user_review')->insertGetId(
                     array(
                         'user_id' => $this->getUserId(),
-                        'nganh_nghe_id' => $data['nganh_nghe_id_form2'],
-                        'level' => $data['level_form2'],
+                        'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
+                        'level' => $request->get('level_form2'),
                         'review_date' => date("Y-m-d $h:$m:s"),
                         'sh' => $sh,
                         'sm' => $sm,
@@ -53,7 +51,7 @@ class ReviewController extends Core_Controller_Action {
             $dapanSigns = $data['dapan_sign'];
             $answersJsons = $data['answers_json'];
             $count_correct = 0;
-            $user_exam_detail = new Default_Model_Userreviewdetail();
+            
             for ($i = 0, $n = count($questionIds); $i < $n; $i++) {
                 if ($answerSigns[$i] == $dapanSigns[$i]) {
                     $is_correct = 1;
@@ -61,7 +59,7 @@ class ReviewController extends Core_Controller_Action {
                 } else {
                     $is_correct = 0;
                 }
-                $user_exam_detail->insert(array(
+                DB::table('user_review_detail')->insert(array(
                     'user_review_id' => $userExamId,
                     'question_id' => $questionIds[$i],
                     'answer_id' => ($answerIds[$i] == '' ? '-1' : $answerIds[$i]),
@@ -69,41 +67,38 @@ class ReviewController extends Core_Controller_Action {
                     'answer_sign' => $answerSigns[$i] == 'Z' ? ' ' : $answerSigns[$i],
                     'dapan_sign' => $dapanSigns[$i],
                     'answers_json' => $answersJsons[$i],
-                ));
+                        )
+                );
+                
             }
-            $db->commit();
+            DB::commit();
         } catch (Exception $e) {
-            $db->rollBack();
+            DB::rollback();
         }
     }
 
     public function viewresultAction() {
-        $db = Core_Db_Table::getDefaultAdapter();
-        $row = $db->fetchRow("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
+        
+        $row = DB::select("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
         if (!is_array($row) || count($row) == 0) {
             $this->_helper->redirector('index', 'review', 'default');
             return;
         }
-        $html = Default_Model_Userreview::getHtmlForReviewResult($row['id'], $title_header);
+        $row=$row[0];
+//     tuetc   $html = Default_Model_Userreview::getHtmlForReviewResult($row['id'], $title_header);
 
         $date = explode(' ', $row['review_date']);
         $date = explode('-', $date[0]);
-        Core_Common_Pdf::createFilePdf(Core_Common_Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
+//    tuetc    Core_Common_Pdf::createFilePdf(Core_Common_Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
     }
 
-    public function indexAction() {
-        $auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-
-        $db = Core_Db_Table::getDefaultAdapter();       
-        $data = $this->_request->getPost();
-         
-        if (count($data) > 0) {//submit
-            if (isset($data['question_id'])) {//trả lời câu hỏi xong và nhấn nút hoàn tất
-                $this->saveDB($data);
+    public function index(Request $request) {
+        $identity=Session::get('user');
+        if ($request->isMethod('POST')) {//submit
+            if ($request->get('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất
+                $this->saveDB($request);
                 $this->resetSession();
-                $this->_helper->redirector('index', 'review', 'default');
-                return;
+                return redirect()->action('ReviewController@index');
             } else {//hệ thống đang ở trạng thái submit của việc [chọn ngành nghề, cấp bậc; sau đó nhấn nút bắt đầu]. Có thể vừa nhấn nút bắt đầu hoặc reload page
 
                 if (isset($identity['examing_review']) && $identity['examing_review'] == true) {//reload page
@@ -111,14 +106,13 @@ class ReviewController extends Core_Controller_Action {
                     $level = $identity['level_review'];
                     $questionIds = $identity['questionIds_review'];
                 } else {//mới vừa làm việc [chọn ngành nghề, cấp bậc; sau đó nhấn nút bắt đầu]
-                    $nganhNgheId = $data['nganh_nghe_id'];
-                    $level = $data['level'];
-                    $config_exam = $db->fetchRow("SELECT * FROM config_exam");
-                    $questionIds = Default_Model_Question::getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam['number']);
+                    $nganhNgheId = $request->get('nganh_nghe_id');
+                    $level = $request->get('level');
+                    $config_exam =DB::table('config_exam')->first();
+                    $questionIds = Question::getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam['number']);
                 }
 
-                $newQuestions = Default_Model_Question::getQuestionsByQuestionIds($questionIds);
-                $auth->clearIdentity();
+                $newQuestions = Question::getQuestionsByQuestionIds($questionIds);
                 if (!isset($identity['examing_review']) || $identity['examing_review'] == FALSE) {
                     $identity['examing_review'] = true;
                     $identity['time_start_review'] = time();
@@ -128,7 +122,7 @@ class ReviewController extends Core_Controller_Action {
                     $identity['sh_review'] = date('H');
                     $identity['sm_review'] = date('i');
                 }
-                $auth->getStorage()->write($identity);
+                Session::set('user',$identity);
             }
         } else {//user vào page này bằng việc click trên menu
 
@@ -136,7 +130,7 @@ class ReviewController extends Core_Controller_Action {
                 $level = $identity['level_review'];
                 $nganhNgheId = $identity['nganh_nghe_id_review'];
                 $questionIds = $identity['questionIds_review'];
-                $newQuestions = Default_Model_Question::getQuestionsByQuestionIds($questionIds);
+                $newQuestions = Question::getQuestionsByQuestionIds($questionIds);
             } else {//
                 $nganhNgheId = $level = 0;
                 $newQuestions = array();
@@ -149,12 +143,13 @@ class ReviewController extends Core_Controller_Action {
         } else {
             $miniutes = 0;
         }
-
-        $this->view->questions = $newQuestions;
-        $this->view->nganhNghes = $db->fetchAll('SELECT * FROM nganh_nghe');
-        $this->view->nganhNgheId = $nganhNgheId;
-        $this->view->level = $level;
-        $this->view->miniutes = $miniutes;
+       
+        $questions = $newQuestions;
+        $nganhNghes =DB::select('SELECT * FROM nganh_nghe');
+        
+        
+        
+        return view('review.index', compact(['questions', 'nganhNghes','nganhNgheId','level','miniutes']));
     }
 
     

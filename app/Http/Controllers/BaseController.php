@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JP_COMMUNITY\Models\Comment;
 use JP_COMMUNITY\Models\User;
+use Illuminate\Support\Facades\Session;
 
 class BaseController extends Controller
 {
@@ -145,5 +146,43 @@ class BaseController extends Controller
         }
 
         return $resComment;
+    }
+    
+    /**
+     * khởi tạo lại session ban đầu
+     * có nghĩa là 
+     *     ban đầu khi login, lưu thông tin session nào thi bây giờ chỉ lấy lại những thông tin đó, 
+     *     những thông tin session mới thêm vào sau này thi hủy đi
+     */
+    public function resetSession() {
+        $identity = Session::get('user');
+
+        foreach ($identity as $key => $value) {
+            if (!in_array($key, array(
+                        'id',
+                        'danh_xung',
+                        'full_name',
+                        'email',
+                        'phone',
+                        'password',
+                        'is_admin',
+                        'user'
+                            )
+                    )
+            ) {
+                unset($identity["$key"]);
+            }
+        }
+
+        Session::set('user',$identity);
+    }
+    
+    public function getUserId() {
+        $identity = Session::get('user');
+        if (!$identity) {
+            return -1;
+        } else {
+            return $identity['id'];
+        }
     }
 }
