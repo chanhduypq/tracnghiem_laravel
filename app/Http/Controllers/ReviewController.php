@@ -77,7 +77,7 @@ class ReviewController extends BaseController {
         }
     }
 
-    public function viewresultAction() {
+    public function viewresult() {
         
         $row = DB::select("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
         if (!is_array($row) || count($row) == 0) {
