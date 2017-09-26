@@ -40,16 +40,21 @@
         </div>
         <?php
     }
-    if (isset($showFormNganhNgheCapBac) && $showFormNganhNgheCapBac == true) { 
-        echo $this->render('thi/partial/form_nganhnghe_capbac.phtml');
+    if (isset($showFormNganhNgheCapBac) && $showFormNganhNgheCapBac == true) {?> 
+        
+        @include('thi.partial.form_nganhnghe_capbac')
+    <?php 
+    
     }
     ?>
     <div class="row-fluid">
         <div class="span12"></div>
     </div>
     <?php 
-    if (is_array($questions) && count($questions) > 0) {
-        echo $this->render('thi/partial/form_question.phtml');
+    if (is_array($questions) && count($questions) > 0) {?>
+        
+        @include('thi.partial.form_question')
+        <?php 
     }
     ?>
     <script src="{{ asset('js/jquery.fileDownload.js') }}?<?php echo substr(md5(microtime()),rand(0,26),5);?>" type="text/javascript"></script>
