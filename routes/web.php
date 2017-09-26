@@ -43,6 +43,11 @@ Route::any('/thi',
         'uses' => 'ThiController@index',
         'as' => 'thi'
     ]);
+Route::any('/thi/viewresult',
+    [
+        'uses' => 'ThiController@viewresult',
+        'as' => 'thi_viewresult'
+    ]);
 Route::any('/review',
     [
         'uses' => 'ReviewController@index',
