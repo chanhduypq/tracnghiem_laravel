@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.index')
 @section('content')
     <link href="{{ asset('css/question.css') }}?<?php echo substr(md5(microtime()), rand(0, 26), 5); ?>" rel="stylesheet" type="textcss"/>
     <?php 

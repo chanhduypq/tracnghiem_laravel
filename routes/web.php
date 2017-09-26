@@ -42,7 +42,7 @@ Route::any('/thi',
     [
         'uses' => 'ThiController@index',
         'as' => 'thi'
-    ]);
+    ]);//->middleware('auth.basic');//->middleware('auth');
 Route::any('/thi/viewresult',
     [
         'uses' => 'ThiController@viewresult',

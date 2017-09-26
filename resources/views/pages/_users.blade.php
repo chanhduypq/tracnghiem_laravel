@@ -1,1 +1,0 @@
-@include('searchs._user_result', ['users' => $users])
