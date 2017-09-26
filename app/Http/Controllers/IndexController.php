@@ -5,6 +5,7 @@ namespace JP_COMMUNITY\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use JP_COMMUNITY\Models\Download;
 
 class IndexController extends BaseController {
 
@@ -26,24 +27,7 @@ class IndexController extends BaseController {
     }
 
     public function guide() {
-        $path = UPLOAD . "/htdocs/guide/";
-        $files = scandir($path, 0);
-        foreach ($files as $file) {
-            if ($file != '.' || $file != '..') {
-                $fileNameForDownload = $file;
-            }
-        }
-
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . $fileNameForDownload . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize(rtrim($path, '/') . '/' . $fileNameForDownload));
-        readfile(rtrim($path, '/') . '/' . $fileNameForDownload);
-        exit;
+        Download::download(UPLOAD . "guide/");        
     }
 
     public function login(Request $request) {

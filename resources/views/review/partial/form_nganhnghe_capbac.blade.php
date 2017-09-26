@@ -61,6 +61,7 @@ if (!is_array($questions) || count($questions) == 0) { ?>
             </div>
         </div>
 
+        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
     </form>
     <?php
 }

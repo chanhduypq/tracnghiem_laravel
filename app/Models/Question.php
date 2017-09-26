@@ -64,7 +64,7 @@ class Question extends BaseModel {
      * @return array
      */
     public static function getFullQuestions($db, $questionIds) {
-        $questions = $db->fetchAll("select "
+        $questions = DB::select("select "
                 . "question.content AS question_content,"
                 . "answer.content AS answer_content,"
                 . "dap_an.sign AS dap_an_sign,"
@@ -94,8 +94,6 @@ class Question extends BaseModel {
     }
 
     public static function getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam_number) {
- var_dump('$questions');
-        exit;
 
         if ($level == '1') {//nếu là bậc 1
             $sql = "SELECT DISTINCT question.id from nganhnghe_question JOIN question ON question.id=nganhnghe_question.question_id WHERE nganhnghe_question.nganhnghe_id=$nganhNgheId AND question.level=1 ORDER BY RAND() LIMIT " . $config_exam_number;
@@ -186,10 +184,10 @@ class Question extends BaseModel {
         } else if ($level == '4' || $level == '5') {
             $level = '3';
         }
-        $db = Core_Db_Table::getDefaultAdapter();
+        
         $sql = "SELECT DISTINCT question.id from nganhnghe_question JOIN question ON question.id=nganhnghe_question.question_id WHERE nganhnghe_question.nganhnghe_id=$nganhNgheId AND question.level<=$level ORDER BY question.id ASC";
 
-        $rows = $db->fetchAll($sql);
+        $rows = DB::select($sql);
         $questionIds = array();
         foreach ($rows as $row) {
             $questionIds[] = $row['id'];
@@ -202,9 +200,8 @@ class Question extends BaseModel {
         if (!is_array($questionIds) || count($questionIds) == 0) {
             return array();
         }
-        $db = Core_Db_Table::getDefaultAdapter();
         $newQuestions = array();
-        $questions = $db->fetchAll("SELECT question.id,question.is_dao,question.content,answer.sign,answer.content AS answer_content,answer.id AS answer_id,dap_an.sign AS dapan_sign FROM question JOIN nganhnghe_question ON question.id = nganhnghe_question.question_id JOIN answer ON answer.question_id=question.id JOIN dap_an ON dap_an.question_id=question.id WHERE question.id IN (" . implode(',', $questionIds) . ") ORDER BY question.id ASC,answer.sign ASC");
+        $questions = DB::select("SELECT question.id,question.is_dao,question.content,answer.sign,answer.content AS answer_content,answer.id AS answer_id,dap_an.sign AS dapan_sign FROM question JOIN nganhnghe_question ON question.id = nganhnghe_question.question_id JOIN answer ON answer.question_id=question.id JOIN dap_an ON dap_an.question_id=question.id WHERE question.id IN (" . implode(',', $questionIds) . ") ORDER BY question.id ASC,answer.sign ASC");
         foreach ($questions as $question) {
             $newQuestions[$question['id']]['id'] = $question['id'];
             $newQuestions[$question['id']]['content'] = $question['content'];

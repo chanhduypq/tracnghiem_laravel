@@ -1,13 +1,15 @@
-<?php 
+<?php
+
 namespace JP_COMMUNITY\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
+use JP_COMMUNITY\Models\UserReview;
+use JP_COMMUNITY\Models\Pdf;
 
 class ReviewController extends BaseController {
-
 
     private function saveDB(Request $request) {
         DB::beginTransaction();
@@ -15,9 +17,9 @@ class ReviewController extends BaseController {
             /**
              *  xóa thông tin lần ôn tập trước
              */
-            DB::statement('DELETE FROM user_review_detail WHERE user_review_id IN (SELECT id FROM user_review WHERE user_id='.$this->getUserId().')');
+            DB::statement('DELETE FROM user_review_detail WHERE user_review_id IN (SELECT id FROM user_review WHERE user_id=' . $this->getUserId() . ')');
             DB::table('user_review')->where('user_id', $this->getUserId())->delete();
-            $identity=Session::get('user');
+            $identity = Session::get('user');
             $sh = $identity['sh_review'];
             $sm = $identity['sm_review'];
 
@@ -26,8 +28,8 @@ class ReviewController extends BaseController {
 
             /**
              * insert table user_review
-             */            
-            $userExamId=DB::table('user_review')->insertGetId(
+             */
+            $userExamId = DB::table('user_review')->insertGetId(
                     array(
                         'user_id' => $this->getUserId(),
                         'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
@@ -40,18 +42,18 @@ class ReviewController extends BaseController {
                         'es' => rand(1, 59),
                     )
             );
-            
+
             /**
              * insert table user_review_detail
              */
             $i = 0;
-            $questionIds = $data['question_id'];
-            $answerIds = $data['answer_id'];
-            $answerSigns = $data['answer_sign'];
-            $dapanSigns = $data['dapan_sign'];
-            $answersJsons = $data['answers_json'];
+            $questionIds = $request->get('question_id');
+            $answerIds = $request->get('answer_id');
+            $answerSigns = $request->get('answer_sign');
+            $dapanSigns = $request->get('dapan_sign');
+            $answersJsons = $request->get('answers_json');
             $count_correct = 0;
-            
+
             for ($i = 0, $n = count($questionIds); $i < $n; $i++) {
                 if ($answerSigns[$i] == $dapanSigns[$i]) {
                     $is_correct = 1;
@@ -69,7 +71,6 @@ class ReviewController extends BaseController {
                     'answers_json' => $answersJsons[$i],
                         )
                 );
-                
             }
             DB::commit();
         } catch (Exception $e) {
@@ -78,29 +79,28 @@ class ReviewController extends BaseController {
     }
 
     public function viewresult() {
-        
+
         $row = DB::select("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
         if (!is_array($row) || count($row) == 0) {
             $this->_helper->redirector('index', 'review', 'default');
             return;
         }
-        $row=$row[0];
-//     tuetc   $html = Default_Model_Userreview::getHtmlForReviewResult($row['id'], $title_header);
+        $row = $row[0];
+        $html = UserReview::getHtmlForReviewResult($row['id'], $title_header);
 
         $date = explode(' ', $row['review_date']);
         $date = explode('-', $date[0]);
-//    tuetc    Core_Common_Pdf::createFilePdf(Core_Common_Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
+        Pdf::createFilePdf(Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
     }
 
     public function index(Request $request) {
-        $identity=Session::get('user');
+        $identity = Session::get('user');        
         if ($request->isMethod('POST')) {//submit
             if ($request->get('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất
                 $this->saveDB($request);
                 $this->resetSession();
                 return redirect()->action('ReviewController@index');
             } else {//hệ thống đang ở trạng thái submit của việc [chọn ngành nghề, cấp bậc; sau đó nhấn nút bắt đầu]. Có thể vừa nhấn nút bắt đầu hoặc reload page
-
                 if (isset($identity['examing_review']) && $identity['examing_review'] == true) {//reload page
                     $nganhNgheId = $identity['nganh_nghe_id_review'];
                     $level = $identity['level_review'];
@@ -108,7 +108,7 @@ class ReviewController extends BaseController {
                 } else {//mới vừa làm việc [chọn ngành nghề, cấp bậc; sau đó nhấn nút bắt đầu]
                     $nganhNgheId = $request->get('nganh_nghe_id');
                     $level = $request->get('level');
-                    $config_exam =DB::table('config_exam')->first();
+                    $config_exam = DB::table('config_exam')->first();
                     $questionIds = Question::getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam['number']);
                 }
 
@@ -122,10 +122,9 @@ class ReviewController extends BaseController {
                     $identity['sh_review'] = date('H');
                     $identity['sm_review'] = date('i');
                 }
-                Session::set('user',$identity);
+                Session::set('user', $identity);
             }
         } else {//user vào page này bằng việc click trên menu
-
             if (isset($identity['examing_review']) && $identity['examing_review'] == true) {//[chọn ngành nghề, cấp bậc; sau đó nhấn nút bắt đầu], việc này đã được làm
                 $level = $identity['level_review'];
                 $nganhNgheId = $identity['nganh_nghe_id_review'];
@@ -143,14 +142,13 @@ class ReviewController extends BaseController {
         } else {
             $miniutes = 0;
         }
-       
+
         $questions = $newQuestions;
-        $nganhNghes =DB::select('SELECT * FROM nganh_nghe');
-        
-        
-        
-        return view('review.index', compact(['questions', 'nganhNghes','nganhNgheId','level','miniutes']));
+        $nganhNghes = DB::select('SELECT * FROM nganh_nghe');
+
+
+
+        return view('review.index', compact(['questions', 'nganhNghes', 'nganhNgheId', 'level', 'miniutes']));
     }
 
-    
 }

@@ -1,3 +1,6 @@
+<?php 
+use Illuminate\Support\Facades\Session;
+?>
 <div id="dialog-form" title="Đổi mật khẩu" style="display: none;">
     <form id="changePassForm">
         <div id="thongBao" style="padding-left: 100px;color: red;">  
@@ -22,7 +25,8 @@
         <div style="clear: both;"></div>
         <div style="float: left;text-align: right;margin-top: 10px;width: 30%;">password:</div>
         <div style="float: left;margin-top: 10px;"><input type="password" name="password" id="password1"/></div>
-        <div style="clear: both;"></div>                
+        <div style="clear: both;"></div>  
+        
     </form>
 </div>
 <script type="text/javascript">
@@ -32,7 +36,7 @@
             if (!validate())
                 return;
 <?php echo 'url="' . route('admin_index_ajaxchangepassword') . '";'; ?>
-            jQuery.post(url, {'oldPassword': jQuery('input#password').val(), 'newPassword': jQuery('input#newPassword').val()}, function (resp) {
+            jQuery.post(url, {'oldPassword': jQuery('input#password').val(), 'newPassword': jQuery('input#newPassword').val(),'_token':'<?php echo Session::token();?>' }, function (resp) {
 
                 if (resp == '') {
                     alert('Thành công');
@@ -112,7 +116,7 @@
             if (!validateLogin())
                 return;
 <?php echo 'url="' . route('index_login') . '";'; ?>
-            jQuery.post(url, {'username': jQuery('input#username').val(), 'password': jQuery('input#password1').val()}, function (resp) {
+            jQuery.post(url, {'username': jQuery('input#username').val(), 'password': jQuery('input#password1').val(),'_token':'<?php echo Session::token();?>' }, function (resp) {
 
                 if (resp == '') {
                     if (type == 0) {
