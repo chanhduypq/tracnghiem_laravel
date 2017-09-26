@@ -81,9 +81,9 @@ class ReviewController extends BaseController {
     public function viewresult() {
 
         $row = DB::select("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
+        
         if (!is_array($row) || count($row) == 0) {
-            $this->_helper->redirector('index', 'review', 'default');
-            return;
+            return redirect()->action('ReviewController@index');
         }
         $row = $row[0];
         $html = UserReview::getHtmlForReviewResult($row['id'], $title_header);

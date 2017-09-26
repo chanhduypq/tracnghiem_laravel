@@ -1,5 +1,6 @@
 <?php 
 namespace JP_COMMUNITY\Models;
+use Illuminate\Support\Facades\DB;
 
 class Headerpdf
 {
