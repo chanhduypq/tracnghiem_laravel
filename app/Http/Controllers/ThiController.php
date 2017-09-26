@@ -56,8 +56,8 @@ class ThiController extends BaseController
     private function saveDB(Request $request) 
     {
         $date = date('Y-m-d');
-        $h = $data['h'];
-        $m = $data['i'];
+        $h = $request->get('h');
+        $m = $request->get('i');
         if($m==0){
             $m=59;
             $h--;
@@ -81,8 +81,8 @@ class ThiController extends BaseController
             $userExamId = $modelUserExam->insert(
                     array(
                         'user_id' => $this->getUserId(),
-                        'nganh_nghe_id' => $data['nganh_nghe_id_form2'],
-                        'level' => $data['level_form2'],
+                        'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
+                        'level' => $request->get('level_form2'),
                         'exam_date' => date("Y-m-d $h:$m:s"),
                         'sh' => $sh,
                         'sm' => $sm,
@@ -92,11 +92,11 @@ class ThiController extends BaseController
                     )
             );
             $i = 0;
-            $questionIds = $data['question_id'];
-            $answerIds = $data['answer_id'];
-            $answerSigns = $data['answer_sign'];
-            $dapanSigns = $data['dapan_sign'];
-            $answersJsons = $data['answers_json'];
+            $questionIds = $request->get('question_id');
+            $answerIds = $request->get('answer_id');
+            $answerSigns = $request->get('answer_sign');
+            $dapanSigns = $request->get('dapan_sign');
+            $answersJsons = $request->get('answers_json');
             $count_correct = 0;
             $user_exam_detail = new Default_Model_Userexamdetail();
             for ($i = 0, $n = count($questionIds); $i < $n; $i++) {
@@ -124,8 +124,8 @@ class ThiController extends BaseController
                 $user_pass = new Default_Model_Userpass();
                 $user_pass->insert(array(
                     'user_id' => $this->getUserId(),
-                    'nganh_nghe_id' => $data['nganh_nghe_id_form2'],
-                    'level' => $data['level_form2'],
+                    'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
+                    'level' => $request->get('level_form2'),
                     'user_exam_id' => $userExamId,
                 ));
             }
@@ -148,11 +148,12 @@ class ThiController extends BaseController
                 $userExamId = -1;
             }
             $i = 0;
-            $questionIds = $data['question_id'];
-            $answerIds = $data['answer_id'];
-            $answerSigns = $data['answer_sign'];
-            $dapanSigns = $data['dapan_sign'];
-            $answersJsons = $data['answers_json'];
+            
+            $questionIds = $request->get('question_id');
+            $answerIds = $request->get('answer_id');
+            $answerSigns = $request->get('answer_sign');
+            $dapanSigns = $request->get('dapan_sign');
+            $answersJsons = $request->get('answers_json');
             $count_correct = 0;
             $user_exam_detail = new Default_Model_Userexamdetail();
             $user_exam_detail->delete('user_exam_id=' . $userExamId);
@@ -183,15 +184,15 @@ class ThiController extends BaseController
                 $user_pass = new Default_Model_Userpass();
                 $user_pass->insert(array(
                     'user_id' => $this->getUserId(),
-                    'nganh_nghe_id' => $data['nganh_nghe_id_form2'],
-                    'level' => $data['level_form2'],
+                    'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
+                    'level' => $request->get('level_form2'),
                     'user_exam_id' => $userExamId,
                 ));
                 $allow_re_exam = 0;
             } else {
                 $allow_re_exam = 1;
             }
-            $modelUserExam->update(array('allow_re_exam' => $allow_re_exam, 'nganh_nghe_id' => $data['nganh_nghe_id_form2'], 'level' => $data['level_form2']), 'id=' . $userExamId);
+            $modelUserExam->update(array('allow_re_exam' => $allow_re_exam, 'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'), 'level' => $request->get('level_form2')), 'id=' . $userExamId);
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
@@ -199,18 +200,18 @@ class ThiController extends BaseController
     }
 
     
-    private function submitReExam($data) 
+    private function submitReExam(Request $request) 
     {
-        $this->saveDBAgain($data);
+        $this->saveDBAgain($request);
         $this->resetSession();
         request()->session()->flash('success', 'Chúc mừng bạn đã hoàn thành kỳ thi lần này.');
         return redirect()->action('ThiController@index');
         exit;
     }
 
-    private function submitExam($data) 
+    private function submitExam(Request $request) 
     {
-        $this->saveDB($data);
+        $this->saveDB($request);
         $this->resetSession();
         request()->session()->flash('success', 'Chúc mừng bạn đã hoàn thành kỳ thi lần này.');
         return redirect()->action('ThiController@index');
@@ -268,15 +269,15 @@ class ThiController extends BaseController
             $level = $identity['level'];
             $questionIds = $identity['questionIds'];
         } else {
-            $nganhNgheId = (count($data) > 0 && isset($data['nganh_nghe_id'])) ? $data['nganh_nghe_id'] : 0;
-            $level = (count($data) > 0 && isset($data['level'])) ? $data['level'] : 0;            
+            $nganhNgheId = ($request->get('nganh_nghe_id')!=null) ? $request->get('nganh_nghe_id') : 0;
+            $level = ($request->get('level')!=null) ? $request->get('level') : 0;            
             $config_exam =DB::table('config_exam')->first();
             $questionIds = Question::getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam['number']);
         }
         
         $date = date('Y-m-d');
-        $h = $this->_getParam('h', date('H'));
-        $m = $this->_getParam('i', date('i'));
+        $h = $request->get('h', date('H'));
+        $m = $request->get('i', date('i'));
         $exam_time = DB::select("select DATE(`date`) AS date,sh,sm,eh,em from exam_time where DATE(`date`)='$date' AND ($h>sh OR ($h=sh AND $m>=sm)) AND ($h < eh OR ($h=eh AND $m<=em))");
         if (is_array($exam_time) && count($exam_time) > 0) {
             $user_exam = DB::select("select * from user_exam where DATE(exam_date)='" . $exam_time[0]['date'] . "' AND user_id=" . $this->getUserId());
@@ -286,7 +287,7 @@ class ThiController extends BaseController
         }
 
         if (
-                (count($data) == 0 && !isset($identity['examing'])) 
+                ($request->has('_token') == false && !isset($identity['examing'])) 
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
                 || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
         ) {
@@ -296,7 +297,7 @@ class ThiController extends BaseController
         }
 
         if (
-                (count($data) > 0 && isset($data['question_id']))//nhấn nút hoàn tất
+                ($request->get('question_id')!=null)//nhấn nút hoàn tất
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
                 || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
         ) {
@@ -306,7 +307,7 @@ class ThiController extends BaseController
         }
 
         if (
-                count($data) > 0 
+                $request->has('_token')
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
                 || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
         ) {
@@ -329,7 +330,7 @@ class ThiController extends BaseController
      */
     private function setupExamingSession(Request $request, $nganhNgheId, $level, $questionIds) 
     {
-        if (count($data) > 0) {
+        if ($request->has('_token')) {
             
             $identity = Session::get('user');  
             if (!isset($identity['examing']) || $identity['examing'] == FALSE) {                
@@ -341,9 +342,9 @@ class ThiController extends BaseController
 
     private function processReExam(Request $request) 
     {
-        if (count($data) > 0) {
-            if (isset($data['question_id'])) {
-                $this->submitReExam($data);
+        if ($request->has('_token')) {
+            if ($request->get('question_id')) {
+                $this->submitReExam($request);
                 exit;
             }
         }
@@ -354,8 +355,8 @@ class ThiController extends BaseController
     {
         
         $date = date('Y-m-d');
-        $h = $this->_getParam('h', date('H'));
-        $m = $this->_getParam('i', date('i'));
+        $h = $request->get('h', date('H'));
+        $m = $request->get('i', date('i'));
         $row = DB::select("select DATE(`date`) AS date,sh,sm,eh,em from exam_time where DATE(`date`)='$date' AND ($h>sh OR ($h=sh AND $m>=sm)) AND ($h < eh OR ($h=eh AND $m<=em))");
         if (is_array($row) && count($row) > 0) {
             $row=$row[0];
@@ -365,7 +366,7 @@ class ThiController extends BaseController
             $this->view->eh = $row['eh'];
             $this->view->em = $row['em'];
         }
-        if ((!is_array($row) || count($row) == 0) && (count($data) == 0 || (count($data) > 0 && !isset($data['question_id'])))) {
+        if ((!is_array($row) || count($row) == 0) && ($request->has('_token') == false || ($request->has('_token')&& $request->get('question_id')==null))) {
             $this->view->miniutes = 0;
             $this->view->message = 'Thời điểm này không nằm trong thời gian thi hoặc bạn đã hết giờ thi.';
         } else {
@@ -374,9 +375,9 @@ class ThiController extends BaseController
                 $this->view->miniutes = 0;
                 $this->view->message = '';
             } else {
-                if (count($data) > 0) {
-                    if (isset($data['question_id'])) {
-                        $this->submitExam($data);
+                if ($request->has('_token')) {
+                    if ($request->get('question_id')) {
+                        $this->submitExam($request);
                         exit;
                     }
                 }
