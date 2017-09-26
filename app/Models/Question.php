@@ -13,7 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use JP_COMMUNITY\Models\Numeric;
+use Illuminate\Common\Numeric;
 
 class Question extends BaseModel {
 

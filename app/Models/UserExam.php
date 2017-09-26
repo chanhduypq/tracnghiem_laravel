@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JP_COMMUNITY\Models\Pdfresult;
 use JP_COMMUNITY\Models\Headerpdf;
-use JP_COMMUNITY\Models\Numeric;
+use Illuminate\Common\Numeric;
 
 class UserExam extends BaseModel
 {

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserReview;
-use JP_COMMUNITY\Models\Pdf;
+use Illuminate\Common\Pdf;
 
 class ReviewController extends BaseController {
 

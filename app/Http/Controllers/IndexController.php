@@ -5,7 +5,7 @@ namespace JP_COMMUNITY\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
-use JP_COMMUNITY\Models\Download;
+use Illuminate\Common\Download;
 
 class IndexController extends BaseController {
 

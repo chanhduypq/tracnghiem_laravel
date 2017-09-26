@@ -1,7 +1,7 @@
 <?php
 
 namespace JP_COMMUNITY\Models;
-use JP_COMMUNITY\Models\Numeric;
+use Illuminate\Common\Numeric;
 
 class Pdfresult {
 

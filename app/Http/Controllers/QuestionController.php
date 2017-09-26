@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserExam;
-use JP_COMMUNITY\Models\Pdf;
-use JP_COMMUNITY\Models\Numeric;
+use Illuminate\Common\Pdf;
+use Illuminate\Common\Numeric;
 
 class QuestionController extends BaseController {
 
