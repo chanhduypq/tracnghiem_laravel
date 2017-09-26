@@ -28,7 +28,7 @@ $GLOBALS['menu_items'] = $menu_items;
         @include('includes.dialog')
         <div class="container" style="padding-left: 10px;padding-right: 10px;">            
             <!--header-->
-            <div class="container" style="padding-top: 30px;height: 100px;background-image: url('<?php echo ltrim($hinh_nen,'/'); ?>');background-repeat: no-repeat;background-size: 100% 100%;">
+            <div class="container" style="padding-top: 30px;height: 100px;background-image: url('/<?php echo ltrim($hinh_nen,'/'); ?>');background-repeat: no-repeat;background-size: 100% 100%;">
                 <div class="row-fluid">
                     <div class="span3">
                         <div class="row-fluid" style="padding-top: 10px;padding-left: 10px;">
@@ -81,7 +81,7 @@ $GLOBALS['menu_items'] = $menu_items;
             <!--below-->    
             <?php 
             if(isset($bg)&&$bg!=''){
-                $bg='background-image: url('.ltrim($bg,'/').');background-size: cover;-webkit-background-size: cover;background-repeat: no-repeat;';
+                $bg='background-image: url(/'.ltrim($bg,'/').');background-size: cover;-webkit-background-size: cover;background-repeat: no-repeat;';
             }
             else{
                 $bg='background: white;';
@@ -93,7 +93,7 @@ $GLOBALS['menu_items'] = $menu_items;
                 <div class="span12" style="min-height: 600px;padding-left: 20px;">
 
                     @yield('content')
-                    <?php if (isset($this->questions) && count($this->questions) > 0) { ?>
+                    <?php if (isset($questions) && count($questions) > 0) { ?>
                         <div style="float: right;position: fixed;right: 0;width: 13%;background-color: blanchedalmond;max-height: 550px;overflow-y: auto;" id="fixed">
                             <?php
                             if (!isset($questions)) {
@@ -153,8 +153,7 @@ $GLOBALS['menu_items'] = $menu_items;
             <div class="row-fluid" style="color:white;background-color: #c1976c;margin-top: 30px;margin-bottom: 30px;">	
                 <!--<div class="span12" style="margin: 0 auto;text-align: center;">-->  
                 <div class="span12">
-                    <?php
-                    // echo $this->footer(array('&COPY;Duong Viet Cuong', 'Địa chỉ: xxx Số điện thoại: yyy ............')); 
+                    <?php                    
                     echo $footer_text;
                     ?>
                 </div>

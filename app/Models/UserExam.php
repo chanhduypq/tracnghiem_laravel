@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JP_COMMUNITY\Models\Pdfresult;
 use JP_COMMUNITY\Models\Headerpdf;
+use JP_COMMUNITY\Models\Numeric;
 
 class UserExam extends BaseModel
 {
@@ -59,7 +60,7 @@ class UserExam extends BaseModel
             }
         }
 
-        if (is_numeric($row[0]['user_pass_id'])) {
+        if (Numeric::isInteger($row[0]['user_pass_id'])) {
             $result = 'Đạt';
         } else {
             $result = 'Chưa đạt';

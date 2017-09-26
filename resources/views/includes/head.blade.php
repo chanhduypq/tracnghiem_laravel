@@ -162,7 +162,7 @@ if ($header_text_dynamic == "1") {
             /**
              * end index.phtml
              **/
-<?php if (isset($this->questions) && count($this->questions) > 0) { ?>
+<?php if (isset($questions) && count($questions) > 0) { ?>
                 $("#fixed").css('top', $("#add-new").offset().top + $("#add-new").height() + 20);
                 h = $(window).height() - ($("#add-new").offset().top + $("#add-new").height()) - 40;
                 $("#fixed").css('height', h + 'px');

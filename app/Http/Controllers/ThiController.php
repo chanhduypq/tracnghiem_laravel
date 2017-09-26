@@ -25,14 +25,13 @@ class ThiController extends BaseController
         $row = DB::select("SELECT * FROM user_exam WHERE user_id=" . $this->getUserId() . " ORDER BY exam_date DESC LIMIT 1");
         if (!is_array($row) || count($row) == 0) {
             return redirect()->action('ThiController@index');
-            return;
         }
         $row=$row[0];
         $html = UserExam::getHtmlForExamResult($row['id'], $title_header);
 
         $date = explode(' ', $row['exam_date']);
         $date = explode('-', $date[0]);
-        Pdf::createFilePdf(Core_Common_Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
+        Pdf::createFilePdf(Pdf::DOWNLOAD, $html, $date[0] . '_' . $date[1] . '_' . $date[2] . '.pdf', $title_header);
     }
 
     public function index(Request $request) 
@@ -43,14 +42,14 @@ class ThiController extends BaseController
         $this->setParams($request, $nganhNgheId, $level, $questionIds, $questions, $nganhNghes, $showFormNganhNgheCapBac);
         $this->setupExamingSession($request, $nganhNgheId, $level, $questionIds);
         if ($this->isReExam()) {
-            $this->processReExam($request);
+            $this->processReExam($request,$miniutes);
         } else {
-            $this->processExam($request);
+            $this->processExam($request,$eh,$em,$miniutes,$message);
         }
 
         $success = request()->session()->get('success');
         
-        return view('thi.index', compact(['i', 'h', 'success', 'nganhNgheId', 'level','questions','nganhNghes','showFormNganhNgheCapBac']));
+        return view('thi.index', compact(['i', 'h', 'success', 'nganhNgheId', 'level','questions','nganhNghes','showFormNganhNgheCapBac','eh','em','miniutes','message']));
     }
     
     private function saveDB(Request $request) 
@@ -77,8 +76,8 @@ class ThiController extends BaseController
             $identity = Session::get('user');  
             $sh = $identity['sh'];
             $sm = $identity['sm'];
-            $modelUserExam = new Default_Model_Userexam();
-            $userExamId = $modelUserExam->insert(
+            
+            $userExamId = DB::table('user_exam')->insertGetId(
                     array(
                         'user_id' => $this->getUserId(),
                         'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
@@ -98,7 +97,7 @@ class ThiController extends BaseController
             $dapanSigns = $request->get('dapan_sign');
             $answersJsons = $request->get('answers_json');
             $count_correct = 0;
-            $user_exam_detail = new Default_Model_Userexamdetail();
+            
             for ($i = 0, $n = count($questionIds); $i < $n; $i++) {
                 if ($answerSigns[$i] == $dapanSigns[$i]) {
                     $is_correct = 1;
@@ -107,7 +106,7 @@ class ThiController extends BaseController
                     $is_correct = 0;
                 }
 
-                $user_exam_detail->insert(array(
+                DB::table('user_exam_detail')->insert(array(
                     'user_exam_id' => $userExamId,
                     'question_id' => $questionIds[$i],
                     'answer_id' => ($answerIds[$i] == '' ? '-1' : $answerIds[$i]),
@@ -121,8 +120,7 @@ class ThiController extends BaseController
             $config_exam =DB::table('config_exam')->first();
 
             if ($count_correct >= $config_exam['phan_tram'] * count($questionIds)) {
-                $user_pass = new Default_Model_Userpass();
-                $user_pass->insert(array(
+                DB::table('user_pass')->insert(array(
                     'user_id' => $this->getUserId(),
                     'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
                     'level' => $request->get('level_form2'),
@@ -155,8 +153,8 @@ class ThiController extends BaseController
             $dapanSigns = $request->get('dapan_sign');
             $answersJsons = $request->get('answers_json');
             $count_correct = 0;
-            $user_exam_detail = new Default_Model_Userexamdetail();
-            $user_exam_detail->delete('user_exam_id=' . $userExamId);
+            
+            DB::table('user_exam_detail')->where('user_exam_id=' . $userExamId)->delete();
             for ($i = 0, $n = count($questionIds); $i < $n; $i++) {
                 if ($answerSigns[$i] == $dapanSigns[$i]) {
                     $is_correct = 1;
@@ -165,7 +163,7 @@ class ThiController extends BaseController
                     $is_correct = 0;
                 }
 
-                $user_exam_detail->insert(array(
+                DB::table('user_exam_detail')->insert(array(
                     'user_exam_id' => $userExamId,
                     'question_id' => $questionIds[$i],
                     'answer_id' => ($answerIds[$i] == '' ? '-1' : $answerIds[$i]),
@@ -176,13 +174,12 @@ class ThiController extends BaseController
                 ));
             }
 
-            $modelUserExam = new Default_Model_Userexam();
+            
 
             $config_exam =DB::table('config_exam')->first();
 
             if ($count_correct >= $config_exam['phan_tram'] * count($questionIds)) {
-                $user_pass = new Default_Model_Userpass();
-                $user_pass->insert(array(
+                DB::table('user_pass')->insert(array(
                     'user_id' => $this->getUserId(),
                     'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'),
                     'level' => $request->get('level_form2'),
@@ -192,7 +189,7 @@ class ThiController extends BaseController
             } else {
                 $allow_re_exam = 1;
             }
-            $modelUserExam->update(array('allow_re_exam' => $allow_re_exam, 'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'), 'level' => $request->get('level_form2')), 'id=' . $userExamId);
+            DB::table('user_exam')->where('id=' . $userExamId)->update(array('allow_re_exam' => $allow_re_exam, 'nganh_nghe_id' => $request->get('nganh_nghe_id_form2'), 'level' => $request->get('level_form2')));
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
@@ -281,7 +278,6 @@ class ThiController extends BaseController
         $exam_time = DB::select("select DATE(`date`) AS date,sh,sm,eh,em from exam_time where DATE(`date`)='$date' AND ($h>sh OR ($h=sh AND $m>=sm)) AND ($h < eh OR ($h=eh AND $m<=em))");
         if (is_array($exam_time) && count($exam_time) > 0) {
             $user_exam = DB::select("select * from user_exam where DATE(exam_date)='" . $exam_time[0]['date'] . "' AND user_id=" . $this->getUserId());
-            $user_exam=$user_exam[0];
         } else {
             $user_exam = array();
         }
@@ -289,7 +285,7 @@ class ThiController extends BaseController
         if (
                 ($request->has('_token') == false && !isset($identity['examing'])) 
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
-                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
+                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam[0]['allow_re_exam'] != '1')//đã thi rồi
         ) {
             $questions = array();
         } else {
@@ -299,7 +295,7 @@ class ThiController extends BaseController
         if (
                 ($request->get('question_id')!=null)//nhấn nút hoàn tất
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
-                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
+                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam[0]['allow_re_exam'] != '1')//đã thi rồi
         ) {
             $nganhNghes = array();
         } else {
@@ -309,7 +305,7 @@ class ThiController extends BaseController
         if (
                 $request->has('_token')
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
-                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] != '1')//đã thi rồi
+                || (is_array($user_exam) && count($user_exam) > 0 && $user_exam[0]['allow_re_exam'] != '1')//đã thi rồi
         ) {
             $showFormNganhNgheCapBac = FALSE;
         } else {
@@ -340,7 +336,7 @@ class ThiController extends BaseController
         }
     }
 
-    private function processReExam(Request $request) 
+    private function processReExam(Request $request,&$miniutes) 
     {
         if ($request->has('_token')) {
             if ($request->get('question_id')) {
@@ -348,10 +344,10 @@ class ThiController extends BaseController
                 exit;
             }
         }
-        $this->view->miniutes = 0;
+        $miniutes = 0;
     }
 
-    private function processExam(Request $request) 
+    private function processExam(Request $request,&$eh,&$em,&$miniutes,&$message) 
     {
         
         $date = date('Y-m-d');
@@ -363,17 +359,17 @@ class ThiController extends BaseController
             $start = new \DateTime($row['date'] . ' ' . $row['sh'] . ':' . $row['sm'] . ':00');
             $current = new \DateTime(date('Y-m-d H:i:00'));
             $diff = $current->diff($start);
-            $this->view->eh = $row['eh'];
-            $this->view->em = $row['em'];
+            $eh = $row['eh'];
+            $em = $row['em'];
         }
         if ((!is_array($row) || count($row) == 0) && ($request->has('_token') == false || ($request->has('_token')&& $request->get('question_id')==null))) {
-            $this->view->miniutes = 0;
-            $this->view->message = 'Thời điểm này không nằm trong thời gian thi hoặc bạn đã hết giờ thi.';
+            $miniutes = 0;
+            $message = 'Thời điểm này không nằm trong thời gian thi hoặc bạn đã hết giờ thi.';
         } else {
             $row = DB::select("select * from user_exam where DATE(exam_date)='" . $row['date'] . "' AND user_id=" . $this->getUserId());
             if (is_array($row) && count($row) > 0) {
-                $this->view->miniutes = 0;
-                $this->view->message = '';
+                $miniutes = 0;
+                $message = '';
             } else {
                 if ($request->has('_token')) {
                     if ($request->get('question_id')) {
@@ -381,7 +377,7 @@ class ThiController extends BaseController
                         exit;
                     }
                 }
-                $this->view->miniutes = $diff->h * 60 + $diff->i;
+                $miniutes = $diff->h * 60 + $diff->i;
             }
         }
     }

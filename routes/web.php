@@ -58,6 +58,11 @@ Route::any('/review/viewresult',
         'uses' => 'ReviewController@viewresult',
         'as' => 'review_viewresult'
     ]);
+Route::any('/question/{nganhNgheId}/{level}',
+    [
+        'uses' => 'QuestionController@index',
+        'as' => 'question'
+    ]);
 Route::any('/admin/index/ajaxchangepassword',
     [
         'uses' => 'AdminIndexController@ajaxchangepassword',

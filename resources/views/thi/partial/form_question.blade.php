@@ -1,9 +1,8 @@
 
 <?php
-
-
-$db = Core_Db_Table::getDefaultAdapter();
-$config_exam = $db->fetchRow("SELECT * FROM config_exam");
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+$config_exam =DB::table('config_exam')->first();
 $minute_per_question = $config_exam['phut'];
 ?>
 <div class="row-fluid" style="margin-bottom: 20px;">
@@ -118,6 +117,7 @@ $minute_per_question = $config_exam['phut'];
         <input type="submit" value="Hoàn tất" id="finish"/>
     </div>
 
+    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 </form>
 
 <script type="text/javascript">

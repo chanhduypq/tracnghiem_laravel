@@ -33,7 +33,7 @@ $controller= strtolower($controller);
                         <ul style="margin-left: 60px;background-color: white;">
                             <?php 
                             for($i=1;$i<=5;$i++){?>
-                                <li><a href="<?php echo route('/'); ?>/question/index/nganhNgheId/<?php echo $row['id'];?>/level/<?php echo $i;?>">Bậc <?php echo $i;?></a></li>
+                                <li><a href="<?php echo route('/'); ?>/question/<?php echo $row['id'];?>/<?php echo $i;?>">Bậc <?php echo $i;?></a></li>
                             <?php 
                             }
                             ?>

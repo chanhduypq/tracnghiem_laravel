@@ -1,5 +1,6 @@
 <?php 
 use Illuminate\Support\Facades\Session;
+use JP_COMMUNITY\Models\Question;
 
 if (Session::get('user')) {
     $identity = Session::get('user');
@@ -38,11 +39,11 @@ $row = DB::select("SELECT * FROM user_exam WHERE user_id=" . $user_id . " ORDER 
             <div class="span3" style="margin-top: 20px;">
                 <select id="level" name="level" style="width: 100%;">
                     <option value="0">-----------Chọn cấp bậc-----------</option>
-                    <option value="<?php echo Default_Model_Question::BAC1; ?>">Bậc 1</option>
-                    <option value="<?php echo Default_Model_Question::BAC2; ?>">Bậc 2</option>
-                    <option value="<?php echo Default_Model_Question::BAC3; ?>">Bậc 3</option>
-                    <option value="<?php echo Default_Model_Question::BAC4; ?>">Bậc 4</option>
-                    <option value="<?php echo Default_Model_Question::BAC5; ?>">Bậc 5</option>
+                    <option value="<?php echo Question::BAC1; ?>">Bậc 1</option>
+                    <option value="<?php echo Question::BAC2; ?>">Bậc 2</option>
+                    <option value="<?php echo Question::BAC3; ?>">Bậc 3</option>
+                    <option value="<?php echo Question::BAC4; ?>">Bậc 4</option>
+                    <option value="<?php echo Question::BAC5; ?>">Bậc 5</option>
                 </select>
             </div>
             <!--<div class="span2" style="margin-top: 20px;"><input type="submit" value="Bắt đầu thi" id="start"/></div>-->
@@ -52,6 +53,7 @@ $row = DB::select("SELECT * FROM user_exam WHERE user_id=" . $user_id . " ORDER 
         </div>
     </div>
 
+    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
 </form>
 
 <script type="text/javascript">

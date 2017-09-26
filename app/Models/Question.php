@@ -13,6 +13,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use JP_COMMUNITY\Models\Numeric;
 
 class Question extends BaseModel {
 
@@ -31,7 +32,7 @@ class Question extends BaseModel {
     public function getQuestions(&$total, $limit = null, $start = null) {
 
 
-        if (is_numeric($limit) && is_numeric($start)) {
+        if (Numeric::isInteger($limit) && Numeric::isInteger($start)) {
             $items =DB::select("select * from question order by id limit $limit,$start");
         } else {
             $items =DB::select("select * from question order by id");
@@ -126,8 +127,14 @@ class Question extends BaseModel {
         } else {//nếu là bậc 4/5
             
             $levelJsonString = DB::select("SELECT data from config_exam_level WHERE level=$level");
-            $levelJsonString=$levelJsonString[0]['data'];
-            $levelJsonArray = json_decode($levelJsonString, true);
+            if(is_array($levelJsonString)&&count($levelJsonString)>0){
+                $levelJsonString=$levelJsonString[0]['data'];
+                $levelJsonArray = json_decode($levelJsonString, true);
+            }
+            else{
+                $levelJsonArray=array('b3'=>'100');
+            }
+           
 
             if ($levelJsonArray['b3'] == '100') {//nếu hệ thống muốn lấy 100% câu b3 cho bậc 4/5
                 $sql = "SELECT DISTINCT question.id from nganhnghe_question JOIN question ON question.id=nganhnghe_question.question_id WHERE nganhnghe_question.nganhnghe_id=$nganhNgheId AND question.level=3 ORDER BY RAND() LIMIT " . $config_exam_number;
