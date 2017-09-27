@@ -23,12 +23,10 @@ class ThiController extends BaseController
 
     public function viewresult() 
     {
-        
-        $row = DB::select("SELECT * FROM user_exam WHERE user_id=" . $this->getUserId() . " ORDER BY exam_date DESC LIMIT 1");
+        $row =DB::table('user_exam')->where("user_id" , $this->getUserId())->orderBy('exam_date', 'DESC')->first(); 
         if (!is_array($row) || count($row) == 0) {
             return redirect()->action('ThiController@index');
         }
-        $row=$row[0];
         $html = UserExam::getHtmlForExamResult($row['id'], $title_header);
 
         $date = explode(' ', $row['exam_date']);
@@ -144,9 +142,10 @@ class ThiController extends BaseController
         DB::beginTransaction();
 
         try {
-            $user_exam = DB::select("select * from user_exam where user_id=" . $this->getUserId() . ' ORDER BY exam_date DESC LIMIT 1');
+            
+            $user_exam =DB::table('user_exam')->where("user_id" , $this->getUserId())->orderBy('exam_date', 'DESC')->first(); 
             if (is_array($user_exam) && count($user_exam) > 0) {
-                $userExamId = $user_exam[0]['id'];
+                $userExamId = $user_exam['id'];
             } else {
                 $userExamId = -1;
             }
@@ -244,8 +243,9 @@ class ThiController extends BaseController
     private function isReExam() 
     {
         
-        $user_exam = DB::select("select * from user_exam where user_id=" . $this->getUserId() . ' ORDER BY exam_date DESC LIMIT 1');
-        if (is_array($user_exam) && count($user_exam) > 0 && $user_exam[0]['allow_re_exam'] == '1') {
+        
+        $user_exam =DB::table('user_exam')->where("user_id" , $this->getUserId())->orderBy('exam_date', 'DESC')->first(); 
+        if (is_array($user_exam) && count($user_exam) > 0 && $user_exam['allow_re_exam'] == '1') {
             return TRUE;
         }
         return FALSE;

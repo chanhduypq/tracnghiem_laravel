@@ -86,12 +86,11 @@ class ReviewController extends BaseController {
 
     public function viewresult() {
 
-        $row = DB::select("SELECT * FROM user_review WHERE user_id=" . $this->getUserId() . " ORDER BY review_date DESC LIMIT 1");
+        $row =DB::table('user_review')->where("user_id" , $this->getUserId())->orderBy('review_date', 'DESC')->first(); 
         
         if (!is_array($row) || count($row) == 0) {
             return redirect()->action('ReviewController@index');
         }
-        $row = $row[0];
         $html = UserReview::getHtmlForReviewResult($row['id'], $title_header);
 
         $date = explode(' ', $row['review_date']);
