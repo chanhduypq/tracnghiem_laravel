@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserReview;
 use Illuminate\Common\Pdf;
+use Illuminate\Support\Facades\Redirect;
 
 class ReviewController extends BaseController {
+    
+    public function __construct() {
+        parent::__construct();     
+    }
+    
 
     private function saveDB(Request $request) {
         DB::beginTransaction();
@@ -94,6 +100,9 @@ class ReviewController extends BaseController {
     }
 
     public function index(Request $request) {
+        if (!Session::has('user')) {
+            Redirect::to('/')->send();
+        }
         $identity = Session::get('user');        
         if ($request->isMethod('POST')) {//submit
             if ($request->get('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất

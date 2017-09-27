@@ -9,14 +9,15 @@ use JP_COMMUNITY\Models\Comment;
 use JP_COMMUNITY\Models\User;
 use Illuminate\Support\Facades\Session;
 
+
 class BaseController extends Controller
 {
     protected $checkbox = ['checkbox'];
     protected $arrayToJsonField = [];
 
+
     public function __construct()
     {
-
         $this->middleware(
         /**
          * @param $request
@@ -102,6 +103,8 @@ class BaseController extends Controller
             return $next($request);
         });
     }
+    
+    
 
     /**
      * Handle fix case checkbox not send request when unchecked.

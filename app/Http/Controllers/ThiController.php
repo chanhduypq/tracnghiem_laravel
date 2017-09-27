@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserExam;
 use Illuminate\Common\Pdf;
+use Illuminate\Support\Facades\Redirect;
 class ThiController extends BaseController 
 {
 
@@ -16,7 +17,7 @@ class ThiController extends BaseController
      * @return void
      */
     public function __construct() {
-        parent::__construct();
+        parent::__construct();     
 //        $this->middleware('auth');
     }
 
@@ -37,6 +38,9 @@ class ThiController extends BaseController
 
     public function index(Request $request) 
     {
+        if (!Session::has('user')) {
+            Redirect::to('/')->send();
+        }
 
         $i = intval(date('i'));
         $h = intval(date('H'));
