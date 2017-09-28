@@ -17,7 +17,7 @@ class ThiController extends BaseController
      * @return void
      */
     public function __construct() {
-        parent::__construct();     
+        parent::__construct();  
 //        $this->middleware('auth');
     }
 
@@ -36,23 +36,22 @@ class ThiController extends BaseController
 
     public function index(Request $request) 
     {
-        if (!Session::has('user')) {
-            Redirect::to('/')->send();
-        }
 
-        $i = intval(date('i'));
-        $h = intval(date('H'));
-        $this->setParams($request, $nganhNgheId, $level, $questionIds, $questions, $nganhNghes, $showFormNganhNgheCapBac);
-        $this->setupExamingSession($request, $nganhNgheId, $level, $questionIds);
+        $this->param['i']=intval(date('i'));
+        $this->param['h']=intval(date('H'));
+        
+        $this->setParams($request);
+        $this->setupExamingSession($request, $this->param['nganhNgheId'] ,$this->param['level'] ,$this->param['questionIds'] );
         if ($this->isReExam()) {
-            $this->processReExam($request,$miniutes);
+            $this->processReExam($request);
         } else {
-            $this->processExam($request,$eh,$em,$miniutes,$message);
+            $this->processExam($request);
         }
 
-        $success = request()->session()->get('success');
+        $this->param['success'] = request()->session()->get('success');
+        
 
-        return view('thi.index', compact(['i', 'h', 'success', 'nganhNgheId', 'level','questions','nganhNghes','showFormNganhNgheCapBac','eh','em','miniutes','message']));
+        return view('thi.index', $this->param);
     }
     
     private function saveDB(Request $request) 
@@ -261,7 +260,7 @@ class ThiController extends BaseController
      * @param array $nganhNghes
      * @param bool $showFormNganhNgheCapBac
      */
-    private function setParams(Request $request, &$nganhNgheId, &$level, &$questionIds, &$questions, &$nganhNghes, &$showFormNganhNgheCapBac) 
+    private function setParams(Request $request) 
     {
         
         $identity = Session::get('user');  
@@ -315,11 +314,21 @@ class ThiController extends BaseController
             $showFormNganhNgheCapBac = FALSE;
         } else {
             if (isset($identity['examing']) && $identity['examing'] == true) {
+                
                 $showFormNganhNgheCapBac = FALSE;
             } else {
+                
                 $showFormNganhNgheCapBac = true;
             }
         }
+        
+        $this->param['questions']=$questions;
+        $this->param['showFormNganhNgheCapBac']=$showFormNganhNgheCapBac;
+        $this->param['nganhNgheId']=$nganhNgheId;
+        $this->param['level']=$level;
+        $this->param['questionIds']=$questionIds;
+        $this->param['nganhNghes']=$nganhNghes;
+        
     }
 
     /**
@@ -341,7 +350,7 @@ class ThiController extends BaseController
         }
     }
 
-    private function processReExam(Request $request,&$miniutes) 
+    private function processReExam(Request $request) 
     {
         if ($request->has('_token')) {
             if ($request->get('question_id')) {
@@ -349,10 +358,11 @@ class ThiController extends BaseController
                 exit;
             }
         }
-        $miniutes = 0;
+
+        $this->param['miniutes']=0;
     }
 
-    private function processExam(Request $request,&$eh,&$em,&$miniutes,&$message) 
+    private function processExam(Request $request) 
     {
         
         $date = date('Y-m-d');
@@ -364,8 +374,8 @@ class ThiController extends BaseController
             $start = new \DateTime($row['date'] . ' ' . $row['sh'] . ':' . $row['sm'] . ':00');
             $current = new \DateTime(date('Y-m-d H:i:00'));
             $diff = $current->diff($start);
-            $eh = $row['eh'];
-            $em = $row['em'];
+            $this->param['eh']=$row['eh'];
+            $this->param['em']=$row['em'];
         }
         if ((!is_array($row) || count($row) == 0) && ($request->has('_token') == false || ($request->has('_token')&& $request->get('question_id')==null))) {
             $miniutes = 0;
@@ -385,6 +395,10 @@ class ThiController extends BaseController
                 $miniutes = $diff->h * 60 + $diff->i;
             }
         }
+
+        
+        $this->param['miniutes']=$miniutes;
+        $this->param['message']=$message;
     }
 
 }

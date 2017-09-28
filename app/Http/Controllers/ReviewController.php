@@ -99,9 +99,7 @@ class ReviewController extends BaseController {
     }
 
     public function index(Request $request) {
-        if (!Session::has('user')) {
-            Redirect::to('/')->send();
-        }
+
         $identity = Session::get('user');        
         if ($request->isMethod('POST')) {//submit
             if ($request->get('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất
