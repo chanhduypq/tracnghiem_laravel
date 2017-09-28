@@ -1,10 +1,10 @@
-
-<?php
+@php 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-$config_exam =DB::table('config_exam')->first();
-$minute_per_question = $config_exam['phut'];
-?>
+@endphp
+@php ($config_exam =DB::table('config_exam')->first())
+@php ($minute_per_question = $config_exam['phut'])
+
 <div class="row-fluid" style="margin-bottom: 20px;">
     <div class="span12" style="text-align: center;margin: 0 auto;font-size: 50px;">
         <div>
@@ -14,37 +14,37 @@ $minute_per_question = $config_exam['phut'];
         </div>
     </div>
     <!--<input type="hidden" id="h_val" value="1"/> <br/>-->
-    <input type="hidden" id="m_val" value="<?php echo count($questions) * $minute_per_question - $miniutes; ?>"/> <br/>
+    <input type="hidden" id="m_val" value="{{ count($questions) * $minute_per_question - $miniutes }}"/> <br/>
     <input type="hidden" id="s_val" value="00"/>
 </div>
 
 
 <form method="POST" onsubmit="return false;" id="form2">
-    <input type="hidden" name="h" id="h" value="<?php echo $h;?>"/>
-    <input type="hidden" name="i" id="i" value="<?php echo $i;?>"/>
+    <input type="hidden" name="h" id="h" value="{{ $h }}"/>
+    <input type="hidden" name="i" id="i" value="{{ $i }}"/>
 
     <div class="row-fluid" style="float: left;width: 85%;">
         <div class="span12"></div>
-        <?php
-        $i = 1;
-        foreach ($questions as $question) {
-            ?>
+        @php ($i = 1)
+            
+        @foreach ($questions as $question) 
             <div>
-                <div class="span12 question" id="question_<?php echo $i; ?>">
-                    <?php echo $i . '/ ' . $question['content']; ?>
+                <div class="span12 question" id="question_{{ $i }}">
+                    {{ $i . '/ ' . $question['content'] }}
                 </div>
-                <?php
-                $answers = $question['answers'];
                 
+                @php ($answers = $question['answers'])
                 
-                if ($question['is_dao'] == '1') {
-                    foreach ($answers as &$answer) {
-                        if ($question['dapan_sign'] == $answer['sign']) {
-                            $answer['is_dapan'] = TRUE;
-                        } else {
-                            $answer['is_dapan'] = FALSE;
-                        }
-                    }
+                @if ($question['is_dao'] == '1')
+                    
+                    <?php foreach ($answers as &$answer){?>
+                        @if ($question['dapan_sign'] == $answer['sign'])
+                            @php ($answer['is_dapan'] = TRUE)
+                        @else 
+                            @php ($answer['is_dapan'] = FALSE)
+                        @endif
+                    <?php }?>
+                    @php 
                     shuffle($answers);
                     $newAnswers['A'] = array_pop($answers);
                     shuffle($answers);
@@ -53,67 +53,64 @@ $minute_per_question = $config_exam['phut'];
                     $newAnswers['C'] = array_pop($answers);
                     //
                     $newAnswers['D'] = array_pop($answers);
-                    foreach ($newAnswers as $key => $newAnswer) {
-                        if ($newAnswer['is_dapan'] == TRUE) {
-                            $question['dapan_sign'] = $key;
-                        }
-                    }
-                } else {
-                    $k = 0;
-                    foreach ($answers as $answer) {
-                        if ($question['dapan_sign'] == $answer['sign']) {
-                            $answer['is_dapan'] = TRUE;
-                        } else {
-                            $answer['is_dapan'] = FALSE;
-                        }
+                    @endphp
+                   
+                    @foreach ($newAnswers as $key => $newAnswer)
+                        @if ($newAnswer['is_dapan'] == TRUE)
+                            @php ($question['dapan_sign'] = $key)
+                        @endif
+                    @endforeach
+                @else 
+                    @php ($k = 0)
+                    @foreach ($answers as $answer) {
+                        @if ($question['dapan_sign'] == $answer['sign'])
+                            @php ($answer['is_dapan'] = TRUE)
+                        @else
+                            @php ($answer['is_dapan'] = FALSE)
+                        @endif
 
-                        if ($k == 0) {
-                            $newAnswers['A'] = $answer;
-                        } else if ($k == 1) {
-                            $newAnswers['B'] = $answer;
-                        } else if ($k == 2) {
-                            $newAnswers['C'] = $answer;
-                        } else {
-                            $newAnswers['D'] = $answer;
-                        }
-                        $k++;
-                    }
-                }
-
-                foreach ($newAnswers as $key=>$answer) {
+                        @if ($k == 0)
+                            @php ($newAnswers['A'] = $answer)
+                        @elseif ($k == 1)
+                            @php ($newAnswers['B'] = $answer)
+                        @elseif ($k == 2)
+                            @php ($newAnswers['C'] = $answer)
+                        @else
+                            @php ($newAnswers['D'] = $answer)
+                        @endif
+                        @php ($k++)
+                    @endforeach
+                @endif
+                @foreach ($newAnswers as $key=>$answer) 
                     ?>
                     <div class="span11 answer">
                         <label>
                             <div class='span1'>
-                                <input type="radio" name="<?php echo $question['id']; ?>" value="<?php echo $answer['id'] . '_' . $key; ?>"/>
-                                <?php echo $key; ?>
+                                <input type="radio" name="{{ $question['id'] }}" value="{{ $answer['id'] . '_' . $key }}"/>
+                                {{ $key }}
                             </div>
                             <div class='span11'>
-                                <?php echo $answer['content']; ?>
+                                {{ $answer['content'] }}
                             </div>
                         </label>
                     </div>
-                    <?php
-                }
-                ?>
-                <input type="hidden" name="question_id[]" value="<?php echo $question['id']; ?>"/>
+                @endforeach
+                <input type="hidden" name="question_id[]" value="{{ $question['id'] }}"/>
                 <input type="hidden" name="answer_id[]"/>
                 <input type="hidden" name="answer_sign[]"/>
-                <input type="hidden" name="dapan_sign[]" value="<?php echo $question['dapan_sign']; ?>"/>
-                <input type="hidden" name="answers_json[]" value='<?php echo json_encode($newAnswers);?>'/>
+                <input type="hidden" name="dapan_sign[]" value="{{ $question['dapan_sign'] }}"/>
+                <input type="hidden" name="answers_json[]" value='{{ json_encode($newAnswers) }}'/>
             </div>
-            <?php
-            $i++;
-        }
-        ?>
+            @php ($i++)
+        @endforeach
     </div>
 
     <div class="row-fluid" style="width: 15%;float: left;" id="goto">
     </div>
 
     <div class="span12" style="text-align: center;margin: 0 auto;">
-        <input type="hidden" name="nganh_nghe_id_form2" value="<?php echo $nganhNgheId; ?>"/>
-        <input type="hidden" name="level_form2" value="<?php echo $level; ?>"/>
+        <input type="hidden" name="nganh_nghe_id_form2" value="{{ $nganhNgheId }}"/>
+        <input type="hidden" name="level_form2" value="{{ $level }}"/>
         <input type="submit" value="Hoàn tất" id="finish"/>
     </div>
 

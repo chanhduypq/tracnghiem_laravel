@@ -51,7 +51,7 @@ class ThiController extends BaseController
         }
 
         $success = request()->session()->get('success');
-        
+
         return view('thi.index', compact(['i', 'h', 'success', 'nganhNgheId', 'level','questions','nganhNghes','showFormNganhNgheCapBac','eh','em','miniutes','message']));
     }
     

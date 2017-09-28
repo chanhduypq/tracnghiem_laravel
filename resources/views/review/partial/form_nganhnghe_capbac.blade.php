@@ -1,56 +1,50 @@
-<?php 
+@php 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use JP_COMMUNITY\Models\Question;
-if (!is_array($questions) || count($questions) == 0) { ?>
+@endphp
+
+@if (!is_array($questions) || count($questions) == 0)
     <form method="POST" id="form1" onsubmit="return false;" action="{{ route('review') }}">
         <div class="row-fluid">
             <div class="span12">
-                <?php
                 
-                if (Session::get('user')) {
-                    $identity = Session::get('user');
-                    $user_id = $identity['id'];
-                }
-                $row =DB::select("SELECT * FROM user_review WHERE user_id=" . $user_id . " ORDER BY review_date DESC LIMIT 1");
+                 
+                @if (Session::get('user')) 
+                    @php ($identity = Session::get('user'))
+                    @php ($user_id = $identity['id'])
+                @endif
+                @php ($row =DB::select("SELECT * FROM user_review WHERE user_id=" . $user_id . " ORDER BY review_date DESC LIMIT 1"))
                 
-                if (is_array($row) && count($row) > 0) {
-                    $row=$row[0];
-                    ?>
+                
+                @if (is_array($row) && count($row) > 0)
+                    @php ($row=$row[0])
                     <div class="span4" style="margin-top: 20px;">
-                        <a class="download-result" href="<?php echo route('review_viewresult'); ?>">
+                        <a class="download-result" href="{{ route('review_viewresult') }}">
                             <button style="border-radius: 5px;background-color: brown;color: white;">
                                 Xem kết quả lần ôn tập gần nhất
                             </button>
                         </a>
                     </div>
-                    <?php
-                } else {
-                    ?>
+                    @else 
                     <div class="span4"></div>
-                    <?php
-                }
-                
-                
-                ?>
+                    @endif
                 <div class="span4" style="margin-top: 20px;">
                     <select id="nganh_nghe_id" name="nganh_nghe_id" style="width: 100%;">
                         <option value="0">------------------Chọn ngành nghề------------------</option>
-                        <?php foreach ($nganhNghes as $nganhNghe) { ?>
-                            <option value="<?php echo $nganhNghe['id']; ?>"><?php echo $nganhNghe['title']; ?></option>
-                            <?php
-                        }
-                        ?>
+                        @foreach ($nganhNghes as $nganhNghe)
+                            <option value="{{ $nganhNghe['id'] }}">{{ $nganhNghe['title'] }}</option>
+                        @endforeach    
                     </select>
                 </div>
                 <div class="span3" style="margin-top: 20px;">
                     <select id="level" name="level" style="width: 100%;">
                         <option value="0">-----------Chọn cấp bậc-----------</option>
-                        <option value="<?php echo Question::BAC1; ?>">Bậc 1</option>
-                        <option value="<?php echo Question::BAC2; ?>">Bậc 2</option>
-                        <option value="<?php echo Question::BAC3; ?>">Bậc 3</option>
-                        <option value="<?php echo Question::BAC4; ?>">Bậc 4</option>
-                        <option value="<?php echo Question::BAC5; ?>">Bậc 5</option>
+                        <option value="{{ Question::BAC1 }}">Bậc 1</option>
+                        <option value="{{ Question::BAC2 }}">Bậc 2</option>
+                        <option value="{{ Question::BAC3 }}">Bậc 3</option>
+                        <option value="{{ Question::BAC4 }}">Bậc 4</option>
+                        <option value="{{ Question::BAC5 }}">Bậc 5</option>
                     </select>
                 </div>
                 <!--<div class="span1" style="margin-top: 20px;"><input type="submit" value="Bắt đầu" id="start"/></div>-->
@@ -63,9 +57,7 @@ if (!is_array($questions) || count($questions) == 0) { ?>
 
         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
     </form>
-    <?php
-}
-?>
+    @endif
 <script src="{{ asset('js/jquery.fileDownload.js') }}?<?php echo substr(md5(microtime()),rand(0,26),5);?>" type="text/javascript"></script>
 <script type="text/javascript">
     jQuery(function ($) {
