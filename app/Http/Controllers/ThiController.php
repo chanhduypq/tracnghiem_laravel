@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserExam;
 use Illuminate\Common\Pdf;
-use Illuminate\Support\Facades\Redirect;
 class ThiController extends BaseController 
 {
 
@@ -270,8 +269,8 @@ class ThiController extends BaseController
             $level = $identity['level'];
             $questionIds = $identity['questionIds'];
         } else {
-            $nganhNgheId = ($request->get('nganh_nghe_id')!=null) ? $request->get('nganh_nghe_id') : 0;
-            $level = ($request->get('level')!=null) ? $request->get('level') : 0;            
+            $nganhNgheId = $request->has('nganh_nghe_id') ? $request->get('nganh_nghe_id') : 0;
+            $level = $request->has('level') ? $request->get('level') : 0;            
             $config_exam =DB::table('config_exam')->first();
             $questionIds = Question::getQuestionIdsByLevelAndNganhNgheId($nganhNgheId, $level, $config_exam['number']);
         }
@@ -297,7 +296,7 @@ class ThiController extends BaseController
         }
 
         if (
-                ($request->get('question_id')!=null)//nhấn nút hoàn tất
+                $request->has('question_id')//nhấn nút hoàn tất
                 || (!is_array($exam_time) || count($exam_time) == 0)//nằm ngoài thời gian thi
                 || (is_array($user_exam) && count($user_exam) > 0 && $user_exam[0]['allow_re_exam'] != '1')//đã thi rồi
         ) {
@@ -352,11 +351,9 @@ class ThiController extends BaseController
 
     private function processReExam(Request $request) 
     {
-        if ($request->has('_token')) {
-            if ($request->get('question_id')) {
-                $this->submitReExam($request);
-                exit;
-            }
+        if ($request->has('_token') && $request->has('question_id')) {
+            $this->submitReExam($request);
+            exit;
         }
 
         $this->param['miniutes']=0;
@@ -386,11 +383,9 @@ class ThiController extends BaseController
                 $miniutes = 0;
                 $message = '';
             } else {
-                if ($request->has('_token')) {
-                    if ($request->get('question_id')) {
-                        $this->submitExam($request);
-                        exit;
-                    }
+                if ($request->has('_token')&&$request->has('question_id')) {
+                    $this->submitExam($request);
+                    exit;
                 }
                 $miniutes = $diff->h * 60 + $diff->i;
             }

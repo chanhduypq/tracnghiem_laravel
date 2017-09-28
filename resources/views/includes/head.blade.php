@@ -1,4 +1,4 @@
-<?php 
+@php 
 use Illuminate\Support\Facades\DB;
 $rows = DB::select('SELECT * FROM layout_content');
 $logo = array('file_name' => '/images/dien_luc.jpg', 'dynamic' => '1');
@@ -10,7 +10,7 @@ foreach ($rows as $row) {
     $footer_text = $row['footer_text'];
     $hinh_nen = $row['hinh_nen_file_name'];
 }
-?>
+@endphp
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8;" />
    
@@ -53,22 +53,14 @@ foreach ($rows as $row) {
 
 
     <!--hiệu ứng chuyển động ảnh-->
-    <?php
-    if ($logo['dynamic'] == "1") {
-        ?>
+    @if ($logo['dynamic'] == "1") 
         <script type="text/javascript" src="{{ asset('js/jquery.cycle.all.js') }}"></script>
-        <?php
-    }
-    ?>
+    @endif
     <!--end hiệu ứng chuyển động ảnh-->
     <!--chạy chữ-->
-    <?php
-    if ($header_text_dynamic == "1") {
-        ?>
+    @if ($header_text_dynamic == "1") 
         <script type="text/javascript" src="{{ asset('js/animation_text/textTyper.js') }}"></script>
-        <?php
-    }
-    ?>
+    @endif
     <!--end chạy chữ-->     
     <script type="text/javascript">
 
@@ -118,22 +110,16 @@ foreach ($rows as $row) {
          * end index.phtml
          **/
         jQuery(function ($) {
-<?php
-if ($logo['dynamic'] == "1") {
-    ?>
+
+@if ($logo['dynamic'] == "1") 
                 $('#logo_header').cycle({
                     fx: 'zoom', sync: false, delay: -2000
                 });
-    <?php
-}
-?>
-<?php
-if ($header_text_dynamic == "1") {
-    ?>
+@endif
+
+@if ($header_text_dynamic == "1") 
                 $('div#simpleDiv').textTyper({repeatAnimation: true, repeatTimes: 100, speed: 50});
-    <?php
-}
-?>
+@endif
 
 
             /**
@@ -162,13 +148,11 @@ if ($header_text_dynamic == "1") {
             /**
              * end index.phtml
              **/
-<?php if (isset($questions) && count($questions) > 0) { ?>
+@if (isset($questions) && count($questions) > 0) 
                 $("#fixed").css('top', $("#add-new").offset().top + $("#add-new").height() + 20);
                 h = $(window).height() - ($("#add-new").offset().top + $("#add-new").height()) - 40;
                 $("#fixed").css('height', h + 'px');
-    <?php
-}
-?>
+@endif
         });
 
     </script>

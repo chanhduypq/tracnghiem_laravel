@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use JP_COMMUNITY\Models\Question;
 use JP_COMMUNITY\Models\UserReview;
 use Illuminate\Common\Pdf;
-use Illuminate\Support\Facades\Redirect;
 
 class ReviewController extends BaseController {
     
@@ -102,7 +101,7 @@ class ReviewController extends BaseController {
 
         $identity = Session::get('user');        
         if ($request->isMethod('POST')) {//submit
-            if ($request->get('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất
+            if ($request->has('question_id')) {//trả lời câu hỏi xong và nhấn nút hoàn tất
                 $this->saveDB($request);
                 $this->resetSession();
                 return redirect()->action('ReviewController@index');
