@@ -8,10 +8,13 @@ use Illuminate\Support\Facades\DB;
 use JP_COMMUNITY\Models\Comment;
 use JP_COMMUNITY\Models\User;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 
 class BaseController extends Controller
 {
+    public $param=array();
+    
     protected $checkbox = ['checkbox'];
     protected $arrayToJsonField = [];
 
@@ -100,7 +103,21 @@ class BaseController extends Controller
 //            view()->share('fullPathImage', $fullPathImage);
 //            view()->share('_userType', $userType);
 
-            return $next($request);
+            $routeArray = app('request')->route()->getAction();
+            $controllerAction = class_basename($routeArray['controller']);
+            list($controller, $action) = explode('@', $controllerAction);
+            $controller = strtolower(str_replace('Controller', '', $controller));
+            if ($controller != 'index' && $controller != 'question') {
+                if (!Session::has('user')) {
+                    return Redirect::to('/')->send();
+                } else {
+                    return $next($request);
+                }
+            } else {
+                return $next($request);
+            }
+
+//            return $next($request);
         });
     }
     
