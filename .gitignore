@@ -3,7 +3,6 @@
 /htdocs/.htaccess
 /htdocs/web.config
 /storage/*.key
-/vendor
 /.idea
 composer.phar
 Homestead.json
@@ -13,3 +12,4 @@ Homestead.yaml
 /nbproject/private/
 nbproject/project.xml
 nbproject/project.properties
+htdocs/guide/huong_dan_su_dung.rar
