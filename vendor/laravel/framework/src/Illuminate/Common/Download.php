@@ -26,7 +26,7 @@ class Download {
                           'Content-Type: application/octet-stream',
                         );
         
-        return $response->download($path.$fileNameForDownload,$fileNameForDownload,$headers);        
+        return $response->download(rtrim($path, '/').'/'.$fileNameForDownload,$fileNameForDownload,$headers);        
     }
 
 
