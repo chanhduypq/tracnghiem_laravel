@@ -27,7 +27,7 @@ class IndexController extends BaseController {
     }
 
     public function guide() {
-        Download::download(UPLOAD . "guide/");        
+        return Download::download(response(),UPLOAD . "guide/");  
     }
 
     public function login(Request $request) {
