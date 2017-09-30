@@ -102,7 +102,7 @@ class Question extends BaseModel {
         } else if ($level == '2' || $level == '3') {//nếu là bậc 2/3
             $levelJsonString = DB::select("SELECT data from config_exam_level WHERE level=$level");
             $levelJsonString=$levelJsonString[0]['data'];
-            $levelJsonArray = json_decode($levelJsonString, true);
+            $levelJsonArray = json_decode(html_entity_decode($levelJsonString), true);
             if ($levelJsonArray['b2'] == '100') {//nếu hệ thống muốn lấy 100% câu b2 cho bậc 2/3
                 $sql = "SELECT DISTINCT question.id from nganhnghe_question JOIN question ON question.id=nganhnghe_question.question_id WHERE nganhnghe_question.nganhnghe_id=$nganhNgheId AND question.level=2 ORDER BY RAND() LIMIT " . $config_exam_number;
                 $rows = DB::select($sql);
@@ -129,7 +129,7 @@ class Question extends BaseModel {
             $levelJsonString = DB::select("SELECT data from config_exam_level WHERE level=$level");
             if(is_array($levelJsonString)&&count($levelJsonString)>0){
                 $levelJsonString=$levelJsonString[0]['data'];
-                $levelJsonArray = json_decode($levelJsonString, true);
+                $levelJsonArray = json_decode(html_entity_decode($levelJsonString), true);
             }
             else{
                 $levelJsonArray=array('b3'=>'100');
