@@ -2124,7 +2124,7 @@ class Builder
 
         foreach ($values as $record) {
             foreach ($record as $value) {
-                $bindings[] = $value;
+                $bindings[] = htmlentities($value);
             }
         }
 
