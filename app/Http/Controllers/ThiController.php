@@ -321,13 +321,12 @@ class ThiController extends BaseController
             }
         }
         
-        $this->param['questions']=$questions;
-        $this->param['showFormNganhNgheCapBac']=$showFormNganhNgheCapBac;
-        $this->param['nganhNgheId']=$nganhNgheId;
-        $this->param['level']=$level;
-        $this->param['questionIds']=$questionIds;
-        $this->param['nganhNghes']=$nganhNghes;
-        
+        $this->param['questions'] = $questions;
+        $this->param['showFormNganhNgheCapBac'] = $showFormNganhNgheCapBac;
+        $this->param['nganhNgheId'] = $nganhNgheId;
+        $this->param['level'] = $level;
+        $this->param['questionIds'] = $questionIds;
+        $this->param['nganhNghes'] = $nganhNghes;
     }
 
     /**
@@ -383,7 +382,7 @@ class ThiController extends BaseController
                 $miniutes = 0;
                 $message = '';
             } else {
-                if ($request->has('_token')&&$request->has('question_id')) {
+                if ($request->has('_token') && $request->has('question_id')) {
                     $this->submitExam($request);
                     exit;
                 }

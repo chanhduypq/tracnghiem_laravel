@@ -1,16 +1,3 @@
-@php 
-use Illuminate\Support\Facades\DB;
-$rows = DB::select('SELECT * FROM layout_content');
-$logo = array('file_name' => '/images/dien_luc.jpg', 'dynamic' => '1');
-$header_text = $header_text_dynamic = $footer_text = $hinh_nen = '';
-foreach ($rows as $row) {
-    $header_text = $row['header_text'];
-    $header_text_dynamic = $row['dynamic_header_text'];
-    $logo = array('file_name' => $row['file_name'], 'dynamic' => $row['dynamic_logo']);
-    $footer_text = $row['footer_text'];
-    $hinh_nen = $row['hinh_nen_file_name'];
-}
-@endphp
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8;" />
    

@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ App::getLocale() }}">
-@include('includes.head')
-@yield('css')
-@yield('js-top')
-
-@include('includes.css_js')
-
-
-<body style="background:#f0f0f0;">
-<?php 
+@php 
 use Illuminate\Support\Facades\DB;
 $rows =DB::select('SELECT * FROM layout_content');
 $menu_items = array();
@@ -23,8 +13,18 @@ foreach ($rows as $row) {
     $footer_text = $row['footer_text'];
     $hinh_nen = $row['hinh_nen_file_name'];
 }
-$GLOBALS['menu_items'] = $menu_items;
-?>
+@endphp
+<!DOCTYPE html>
+<html lang="{{ App::getLocale() }}">
+@include('includes.head', ['logo' => $logo])
+@yield('css')
+@yield('js-top')
+
+@include('includes.css_js')
+
+
+<body style="background:#f0f0f0;">
+
         @include('includes.dialog')
         <div class="container" style="padding-left: 10px;padding-right: 10px;">            
             <!--header-->
@@ -75,7 +75,7 @@ $GLOBALS['menu_items'] = $menu_items;
             <!--middle-->
             <!--above-->                           
             <div class="row-fluid" style="margin-top: 10px;">
-                @include('includes.header')
+                @include('includes.header',['menu_items'=>$menu_items])
             </div>
             <!--end above-->
             <!--below-->    
