@@ -9,17 +9,13 @@ if (\Illuminate\Support\Facades\Session::has('user')) {
     $idReview=' id="review"';
     
 }
-$routeArray = app('request')->route()->getAction();
-$controllerAction = class_basename($routeArray['controller']);
-list($controller, $action) = explode('@', $controllerAction);
-$controller = strtolower(str_replace('Controller', '', $controller));
 @endphp
 <div class="span12" style="padding: 20px;">
     <ul id="topnav">
-        <li<?php if ($controller=='index') echo ' class="active"'; ?>><a href="<?php echo route('/'); ?>/"><?php echo $menu_items[0]; ?></a></li>
-        <li<?php echo $idThi; if ($controller=='thi') echo ' class="active"'; ?>><a href="<?php echo $hrefThi; ?>"><?php echo $menu_items[1]; ?></a></li>                        
-        <li<?php echo $idReview; if ($controller=='review') echo ' class="active"'; ?>><a href="<?php echo $hrefReview; ?>"><?php echo $menu_items[2]; ?></a></li>                        
-        <li<?php if ($controller=='question') echo ' class="active"'; ?>>
+        <li{!! (Request::is('/') ? ' class="active"' : '') !!}><a href="<?php echo route('/'); ?>/"><?php echo $menu_items[0]; ?></a></li>
+        <li{{ $idThi }}{!! (Request::is('thi') ? ' class="active"' : '') !!}><a href="<?php echo $hrefThi; ?>"><?php echo $menu_items[1]; ?></a></li>                        
+        <li{{ $idReview }}{!! (Request::is('review') ? ' class="active"' : '') !!}><a href="<?php echo $hrefReview; ?>"><?php echo $menu_items[2]; ?></a></li>                        
+        <li{!! (Request::is('question*') ? ' class="active"' : '') !!}>
             <a href="#"><?php echo $menu_items[3]; ?></a>
             <ul style="background-color: white;" id="par">
                 <?php 
