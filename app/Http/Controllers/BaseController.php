@@ -103,10 +103,7 @@ class BaseController extends Controller
 //            view()->share('fullPathImage', $fullPathImage);
 //            view()->share('_userType', $userType);
 
-            $routeArray = app('request')->route()->getAction();
-            $controllerAction = class_basename($routeArray['controller']);
-            list($controller, $action) = explode('@', $controllerAction);
-            $controller = strtolower(str_replace('Controller', '', $controller));
+            $controller = $this->getControllerName();
             if ($controller != 'index' && $controller != 'question') {
                 if (!Session::has('user')) {
                     return Redirect::to('/')->send();
