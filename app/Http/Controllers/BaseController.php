@@ -121,7 +121,22 @@ class BaseController extends Controller
         });
     }
     
+    /**
+     * function common
+     * @author Trần Công Tuệ <chanhduypq@gmail.com>
+     * @return string
+     */
+    public function getControllerName()
+    {
+        $routeArray = app('request')->route()->getAction();
+        $controllerAction = class_basename($routeArray['controller']);
+        list($controller, $action) = explode('@', $controllerAction);
+        $controller = strtolower(str_replace('Controller', '', $controller));
+        return $controller;
+    }
+
     
+
 
     /**
      * Handle fix case checkbox not send request when unchecked.
