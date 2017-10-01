@@ -32,6 +32,18 @@ use Illuminate\Support\Facades\Session;
 <script type="text/javascript">
     type = 0;
     jQuery(function ($) {
+        $('#dialog-form-login').keypress(function(e) {
+            if (e.keyCode == $.ui.keyCode.ENTER) {
+              subLogin();
+            }
+        });
+        
+        $('#dialog-form').keypress(function(e) {
+            if (e.keyCode == $.ui.keyCode.ENTER) {
+              sub();
+            }
+        });
+        
         function sub() {
             if (!validate())
                 return;
