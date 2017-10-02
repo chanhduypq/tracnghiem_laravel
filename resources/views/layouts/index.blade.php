@@ -20,8 +20,6 @@ foreach ($rows as $row) {
 @yield('css')
 @yield('js-top')
 
-@include('includes.css_js')
-
 
 <body style="background:#f0f0f0;">
 

@@ -4,23 +4,23 @@
    
     <script type="text/javascript" src="{{ asset('js/jquery-2.0.3.js') }}"></script>
     <!--bootstrap-->
-    <link href="{{ asset('bootstrap/css/bootstrap.css') }}" rel="stylesheet" type="textcss"/>
-    <link href="{{ asset('bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet" type="textcss"/> 
+    <link href="{{ asset('bootstrap/css/bootstrap.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('bootstrap/css/bootstrap-responsive.css') }}" rel="stylesheet" type="text/css"/> 
     <script type="text/javascript" src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>        
     <!--end bootstrap-->
     <!--menu-->
-    <link href="{{ asset('css/menu/menu.css') }}" media="screen" rel="stylesheet" type="textcss" />				 
+    <link href="{{ asset('css/menu/menu.css') }}" media="screen" rel="stylesheet" type="text/css" />				 
     <!--end menu-->  
     <!-- top bottom-->
-    <link href="{{ asset('css/top_bottom.css') }}" rel="stylesheet" type="textcss"/>
+    <link href="{{ asset('css/top_bottom.css') }}" rel="stylesheet" type="text/css"/>
     <!-- end top bottom-->
-    <link href="{{ asset('css/phan_trang.css') }}" rel="stylesheet" type="textcss"/> 
+    <link href="{{ asset('css/phan_trang.css') }}" rel="stylesheet" type="text/css"/> 
     <!--layout-->
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="textcss"/>
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css"/>
     <!--end layout--> 
 
-    <link rel="stylesheet" href="{{ asset('jquery-ui-1.10.3/themes/smoothness/jquery-ui.css') }}" type="textcss"/>
-    <link rel="stylesheet" type="textcss" href="{{ asset('css/jquery.cluetip.css') }}" media="all" />
+    <link rel="stylesheet" href="{{ asset('jquery-ui-1.10.3/themes/smoothness/jquery-ui.css') }}" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.cluetip.css') }}" media="all" />
 
     <script type="text/javascript" src="{{ asset('js/jquery.textarea-expander.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/jquery.cluetip.js') }}"></script>
@@ -31,7 +31,7 @@
 
 
     <script type="text/javascript" src="{{ asset('js/jquery.alerts.js') }}"></script>
-    <link href="{{ asset('css/jquery.alerts.css') }}" rel="stylesheet" type="textcss"/>
+    <link href="{{ asset('css/jquery.alerts.css') }}" rel="stylesheet" type="text/css"/>
 
     <!-- append form for click in index page-->
     <!--<script type="text/javascript" src="{{ asset('js/build_form_click.js') }}"></script>-->
