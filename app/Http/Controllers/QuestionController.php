@@ -29,8 +29,9 @@ class QuestionController extends BaseController {
 
         $questionArray = Question::getQuestionsByLevelAndNganhNgheIdForPageQuestion($nganhNgheId, $level);
         
-        return view('question.index', compact(['questionArray']));
+        $title = 'Ngân hàng câu hỏi';
         
+        return view('question.index', compact(['questionArray', 'title']));
     }
 
     

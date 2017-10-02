@@ -1,4 +1,5 @@
 @extends('layouts.index')
+@section('title', $title)
 @section('content')
     <link href="{{ asset('css/question.css') }}?{{ substr(md5(microtime()), rand(0, 26), 5) }}" rel="stylesheet" type="textcss"/>
     

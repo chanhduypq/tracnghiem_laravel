@@ -1,4 +1,5 @@
 <head>
+    <title>@yield('title')</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8;" />
    
     <script type="text/javascript" src="{{ asset('js/jquery-2.0.3.js') }}"></script>

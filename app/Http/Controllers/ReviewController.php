@@ -152,8 +152,9 @@ class ReviewController extends BaseController {
         $nganhNghes = DB::select('SELECT * FROM nganh_nghe');
 
 
+        $title = 'Thi thử - Ôn tập';
 
-        return view('review.index', compact(['questions', 'nganhNghes', 'nganhNgheId', 'level', 'miniutes']));
+        return view('review.index', compact(['questions', 'nganhNghes', 'nganhNgheId', 'level', 'miniutes', 'title']));
     }
 
 }

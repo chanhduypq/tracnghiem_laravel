@@ -22,8 +22,9 @@ class IndexController extends BaseController {
         $item = DB::table('home_content')->first();
         $content = $item['content'];
         $bg = $item['bg'];
+        $title = 'Trang chủ';
 
-        return view('index.index', compact(['content', 'bg']));
+        return view('index.index', compact(['content', 'bg', 'title']));
     }
 
     public function guide() {

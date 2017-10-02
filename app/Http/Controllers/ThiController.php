@@ -49,6 +49,7 @@ class ThiController extends BaseController
 
         $this->param['success'] = request()->session()->get('success');
         
+        $this->param['title'] = 'Thi trắc nghiệm';
 
         return view('thi.index', $this->param);
     }
