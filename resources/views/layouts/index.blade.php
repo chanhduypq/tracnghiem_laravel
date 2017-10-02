@@ -17,8 +17,7 @@ foreach ($rows as $row) {
 <!DOCTYPE html>
 <html lang="{{ App::getLocale() }}">
 @include('includes.head', ['logo' => $logo])
-@yield('css')
-@yield('js-top')
+
 
 
 <body style="background:#f0f0f0;">

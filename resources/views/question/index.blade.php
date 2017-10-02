@@ -1,5 +1,4 @@
 @extends('layouts.index')
-@section('title', $title)
 @section('content')
     <?php 
     if(count($questionArray)>0){

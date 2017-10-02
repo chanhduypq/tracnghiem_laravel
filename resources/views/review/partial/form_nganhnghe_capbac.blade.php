@@ -58,6 +58,7 @@ use JP_COMMUNITY\Models\Question;
         <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
     </form>
     @endif
+@section('js-top')
 <script src="{{ asset('js/jquery.fileDownload.js') }}?<?php echo substr(md5(microtime()),rand(0,26),5);?>" type="text/javascript"></script>
 <script type="text/javascript">
     jQuery(function ($) {
@@ -94,3 +95,4 @@ use JP_COMMUNITY\Models\Question;
 
     
 </script>
+@endsection

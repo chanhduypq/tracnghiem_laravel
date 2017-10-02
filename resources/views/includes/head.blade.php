@@ -1,5 +1,5 @@
 <head>
-    <title>@yield('title')</title>
+    <title>{{ $title }}</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8;" />
    
     <script type="text/javascript" src="{{ asset('js/jquery-2.0.3.js') }}"></script>
@@ -49,6 +49,9 @@
     @if ($header_text_dynamic == "1") 
         <script type="text/javascript" src="{{ asset('js/animation_text/textTyper.js') }}"></script>
     @endif
+    
+    @yield('css')
+    @yield('js-top')
     <!--end chạy chữ-->     
     <script type="text/javascript">
 

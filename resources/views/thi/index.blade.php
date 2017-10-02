@@ -1,7 +1,25 @@
 @extends('layouts.index')
-@section('title', $title)
+@section('css')
+    <link href="{{ asset('css/question.css') }}?<?php echo substr(md5(microtime()), rand(0, 26), 5); ?>" rel="stylesheet" type="text/css"/>
+@endsection
+@section('js-top')
+    <script src="{{ asset('js/jquery.fileDownload.js') }}?{{ substr(md5(microtime()),rand(0,26),5) }}" type="text/javascript"></script>
+    <script type="text/javascript"> 
+        jQuery(function ($){
+
+            $(document).on("click", "a.download-result", function () {
+                $.fileDownload($(this).prop('href'), {
+                    preparingMessageHtml: "Hệ thống đang download, vui lòng chờ cho đến khi hoàn thành.",
+                    failMessageHtml: "Đường truyền internet bị lỗi. Vui lòng thử lại sau."
+                });
+                return false; 
+            });
+        });
+
+
+    </script>
+@endsection
 @section('content')
-    <link href="{{ asset('css/question.css') }}?{{ substr(md5(microtime()), rand(0, 26), 5) }}" rel="stylesheet" type="text/css"/>
     
     @php use Illuminate\Support\Facades\Session; @endphp
     @if ($success != '')
@@ -49,21 +67,7 @@
     @if (is_array($questions) && count($questions) > 0)         
         @include('thi.partial.form_question')
     @endif
-    <script src="{{ asset('js/jquery.fileDownload.js') }}?{{ substr(md5(microtime()),rand(0,26),5) }}" type="text/javascript"></script>
-    <script type="text/javascript"> 
-        jQuery(function ($){
-
-            $(document).on("click", "a.download-result", function () {
-                $.fileDownload($(this).prop('href'), {
-                    preparingMessageHtml: "Hệ thống đang download, vui lòng chờ cho đến khi hoàn thành.",
-                    failMessageHtml: "Đường truyền internet bị lỗi. Vui lòng thử lại sau."
-                });
-                return false; 
-            });
-        });
-
-
-    </script>
+    
 @endsection
 
 
