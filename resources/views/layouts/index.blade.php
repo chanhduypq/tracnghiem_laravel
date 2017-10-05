@@ -72,7 +72,7 @@ foreach ($rows as $row) {
             <!--middle-->
             <!--above-->                           
             <div class="row-fluid" style="margin-top: 10px;">
-                @include('includes.header',['menu_items'=>$menu_items])
+                @include('includes.menu',['menu_items'=>$menu_items])
             </div>
             <!--end above-->
             <!--below-->    
