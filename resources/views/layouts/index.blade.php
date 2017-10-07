@@ -1,4 +1,5 @@
 @php 
+use Illuminate\Common\Image;
 use Illuminate\Support\Facades\DB;
 $rows =DB::select('SELECT * FROM layout_content');
 $menu_items = array();
@@ -35,8 +36,8 @@ foreach ($rows as $row) {
 
                                 <div class="span12" id="logo_header">
                                     <?php
-                                    echoImage(ltrim($logo['file_name'],'/') , 70, 70, 'height', array('id' => 'logo-img'));
-                                    echoImage(ltrim($logo['file_name'],'/'), 70, 70, 'height', array('id' => 'logo-img1'));
+                                    Image::echoImage(ltrim($logo['file_name'],'/') , 70, 70, 'height', array('id' => 'logo-img'));
+                                    Image::echoImage(ltrim($logo['file_name'],'/'), 70, 70, 'height', array('id' => 'logo-img1'));
                                     ?>
                                 </div>
                                 <?php
@@ -44,7 +45,7 @@ foreach ($rows as $row) {
                                 ?>
                                 <div class="span12" id="logo_header">
                                     <?php
-                                    echoImage(ltrim($logo['file_name'],'/'), 70, 70, 'height', array('id' => 'logo-img'));
+                                    Image::echoImage(ltrim($logo['file_name'],'/'), 70, 70, 'height', array('id' => 'logo-img'));
                                     ?>
                                 </div>
                                 <?php
@@ -164,64 +165,3 @@ foreach ($rows as $row) {
         <div id='footer'/>
     </body>
 </html>
-<?php 
-function echoImage($image_path, $width_for_view, $height_for_view, $order = "width", $html_option = array()) {
-    if (!is_string($order) || ($order != "width" && $order != "height")) {
-        echo "";
-        return;
-    }
-    if (!is_string($image_path) || trim($image_path) == "") {
-        echo "";
-        return;
-    }
-    if ($image_path[0] != '/') {
-        if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $image_path) || !is_file($_SERVER['DOCUMENT_ROOT'] . '/' . $image_path)) {
-            echo "";
-            return;
-        }
-        $url = $image_path;
-    } else if ($image_path[0] == '/') {
-        if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $image_path) || !is_file($_SERVER['DOCUMENT_ROOT'] . $image_path)) {
-            echo "";
-            return;
-        }
-        $url = ltrim($image_path, '/');
-    }
-    list($width_orig, $height_orig) = getimagesize($url);
-//        if($width_orig>=$height_orig){
-//            $width = $width_for_view;
-//            $ratio = $height_orig / $width_orig;
-//            $height = ceil($width * $ratio);
-//        }
-//        else{
-//            $height = $height_for_view;       
-//            $ratio = $width_orig / $height_orig;
-//            $width = ceil($height * $ratio);
-//        }
-    if ($order == "width") {
-        if ($width_orig > $width_for_view) {
-            $width = $width_for_view;
-        } else {
-            $width = $width_orig;
-        }
-        $ratio = $height_orig / $width_orig;
-        $height = ceil($width * $ratio);
-    } else if ($order == "height") {
-        if ($height_orig > $height_for_view) {
-            $height = $height_for_view;
-        } else {
-            $height = $height_orig;
-        }
-        $ratio = $width_orig / $height_orig;
-        $width = ceil($height * $ratio);
-    }
-    if ($image_path[0] != '/') {
-        $image_path = '/' . $image_path;
-    }
-    $attr_string = "";
-    foreach ($html_option as $key => $value) {
-        $attr_string .= " $key='$value'";
-    }
-    echo '<img' . $attr_string . ' style="margin: 0 auto;width: ' . $width . 'px;height: ' . $height . 'px;" src="' . $image_path . '"/>';
-}
-?>
