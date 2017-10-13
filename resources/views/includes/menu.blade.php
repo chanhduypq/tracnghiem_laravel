@@ -13,8 +13,8 @@ if (\Illuminate\Support\Facades\Session::has('user')) {
 <div class="span12" style="padding: 20px;">
     <ul id="topnav">
         <li{!! (Request::is('/') ? ' class="active"' : '') !!}><a href="<?php echo route('/'); ?>/"><?php echo $menu_items[0]; ?></a></li>
-        <li<?php echo $idThi;?>{!! (Request::is('thi') ? ' class="active"' : '') !!}><a href="<?php echo $hrefThi; ?>"><?php echo $menu_items[1]; ?></a></li>                        
-        <li<?php echo $idReview;?>{!! (Request::is('review') ? ' class="active"' : '') !!}><a href="<?php echo $hrefReview; ?>"><?php echo $menu_items[2]; ?></a></li>                        
+        <li{!! $idThi !!}{!! (Request::is('thi') ? ' class="active"' : '') !!}><a href="<?php echo $hrefThi; ?>"><?php echo $menu_items[1]; ?></a></li>                        
+        <li{!! $idReview !!}{!! (Request::is('review') ? ' class="active"' : '') !!}><a href="<?php echo $hrefReview; ?>"><?php echo $menu_items[2]; ?></a></li>                        
         <li{!! (Request::is('question*') ? ' class="active"' : '') !!}>
             <a href="#"><?php echo $menu_items[3]; ?></a>
             <ul style="background-color: white;" id="par">

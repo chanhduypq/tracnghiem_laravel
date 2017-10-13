@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
     
     @php ($config_exam =DB::table('config_exam')->first())
     @php ($minute_per_question = $config_exam['phut'])
-    
     <div class="row-fluid" style="margin-bottom: 20px;">
         <div class="span12" style="text-align: center;margin: 0 auto;font-size: 50px;">
             <div>
@@ -16,7 +15,7 @@ use Illuminate\Support\Facades\DB;
             </div>
         </div>
         <!--<input type="hidden" id="h_val" value="1"/> <br/>-->
-        <input type="hidden" id="m_val" value="{{ count($questions) * $minute_per_question - $miniutes }}"/> <br/>
+        <input type="hidden" id="m_val" value="{!! count($questions) * $minute_per_question - $miniutes !!}"/> <br/>
         <input type="hidden" id="s_val" value="00"/>
     </div>
 
@@ -32,8 +31,8 @@ use Illuminate\Support\Facades\DB;
             @foreach ($questions as $question) 
                 
                 <div>
-                    <div class="span12 question" id="question_{{ $i }}">
-                        {{ $i . '/ ' . $question['content'] }}
+                    <div class="span12 question" id="question_{!! $i !!}">
+                        {!! $i . '/ ' . $question['content'] !!}
                     </div>
                     @php ($answers = $question['answers'])
                     
@@ -88,20 +87,20 @@ use Illuminate\Support\Facades\DB;
                         <div class="span11 answer">
                             <label>
                                 <div class='span1'>
-                                    <input type="radio" name="{{ $question['id'] }}" value="{{ $answer['id'] . '_' . $key }}"/>
-                                    {{ $key }}
+                                    <input type="radio" name="{!! $question['id'] !!}" value="{!! $answer['id'] . '_' . $key !!}"/>
+                                    {!! $key !!}
                                 </div>
                                 <div class='span11'>
-                                    {{ $answer['content'] }}
+                                    {!! $answer['content'] !!}
                                 </div>
                             </label>
                         </div>
                     @endforeach
-                    <input type="hidden" name="question_id[]" value="{{ $question['id'] }}"/>
+                    <input type="hidden" name="question_id[]" value="{!! $question['id'] !!}"/>
                     <input type="hidden" name="answer_id[]"/>
                     <input type="hidden" name="answer_sign[]"/>
-                    <input type="hidden" name="dapan_sign[]" value="{{ $question['dapan_sign'] }}"/>
-                    <input type="hidden" name="answers_json[]" value='{{ json_encode($newAnswers) }}'/>
+                    <input type="hidden" name="dapan_sign[]" value="{!! $question['dapan_sign'] !!}"/>
+                    <input type="hidden" name="answers_json[]" value='{!! json_encode($newAnswers) !!}'/>
                 </div>                
                 @php ($i++)
             @endforeach
@@ -113,12 +112,12 @@ use Illuminate\Support\Facades\DB;
     @endif
     @if (is_array($questions) && count($questions) > 0)         
         <div class="span12" style="text-align: center;margin: 0 auto;">
-            <input type="hidden" name="nganh_nghe_id_form2" value="{{ $nganhNgheId }}"/>
-            <input type="hidden" name="level_form2" value="{{ $level }}"/>
+            <input type="hidden" name="nganh_nghe_id_form2" value="{!! $nganhNgheId !!}"/>
+            <input type="hidden" name="level_form2" value="{!! $level !!}"/>
             <input type="submit" value="Hoàn tất" id="finish"/>
         </div>
     @endif
-    <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+    <input type="hidden" name="_token" id="csrf-token" value="{!! Session::token() !!}" />
 </form>
 
 <script type="text/javascript">
